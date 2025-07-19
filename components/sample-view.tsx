@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sample } from "@/lib/generated/prisma";
+import { Sample } from "@/lib/types";
 import { addSample, deleteSample } from "@/server/actions/sample";
 import { BookOpen, Plus, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -45,8 +45,9 @@ export default function SampleView({
     });
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",

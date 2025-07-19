@@ -10,11 +10,10 @@ pnpm-lock.yaml
 out/
 build/
 
-# === Prisma Generated Files ===
-prisma/dev.db
-prisma/migrations/
-/lib/generated/prisma/
+# === Database Files ===
+*.db
 *.sqlite
+*.sqlite3
 
 # === TypeScript ===
 *.tsbuildinfo
