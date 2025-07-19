@@ -11,7 +11,7 @@ export const emailConfig = {
 };
 
 // Create reusable transporter
-export const transporter = nodemailer.createTransporter({
+export const transporter = nodemailer.createTransport({
   ...emailConfig,
 });
 
