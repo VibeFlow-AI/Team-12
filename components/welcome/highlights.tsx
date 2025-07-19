@@ -64,7 +64,7 @@ export default function SessionHighlights() {
           <p className="text-sm sm:text-base lg:text-lg text-gray-700 leading-relaxed">
             Join the sessions students are raving about. These expert-led,
             high-impact sessions are designed to help you unlock your full
-            potential whether you're polishing your resume, mapping out your
+            potential whether you&apos;re polishing your resume, mapping out your
             career path, or getting ready to ace technical interviews.
           </p>
         </div>
