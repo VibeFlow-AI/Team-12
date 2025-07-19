@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import Navigation from "@/components/welcome/navigation";
 import HeroSection from "@/components/welcome/hero-section";
 import StudentBenefits from "@/components/welcome/student-benefits";
-import SessionHighlights from "@/components/welcome/session-highlights";
+import SessionHighlights from "@/components/welcome/highlights";
 import AnimatedCardsSection from "@/components/welcome/animated-cards";
 
 export default function WelcomePage() {

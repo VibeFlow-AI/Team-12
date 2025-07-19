@@ -6,63 +6,75 @@
 /* Custom colors for EduVibe */
 @layer utilities {
   .bg-cream {
-    background-color: #F5F3EF;
+    background-color: #f5f3ef;
   }
   .bg-sage {
-    background-color: #A8B5A0;
+    background-color: #a8b5a0;
   }
   .bg-forest {
-    background-color: #4A5D23;
+    background-color: #4a5d23;
   }
   .text-cream {
-    color: #F5F3EF;
+    color: #f5f3ef;
   }
   .text-sage {
-    color: #A8B5A0;
+    color: #a8b5a0;
   }
   .text-forest {
-    color: #4A5D23;
+    color: #4a5d23;
   }
-  
+
   /* Gradient backgrounds */
   .gradient-bg {
     background: linear-gradient(135deg, #f8f7f4 0%, #e8e6e1 50%, #d4d2c8 100%);
   }
-  
+
   .subtle-pattern {
-    background-image: 
-      radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+    background-image:
+      radial-gradient(
+        circle at 25% 25%,
+        rgba(0, 0, 0, 0.02) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 75% 75%,
+        rgba(0, 0, 0, 0.02) 0%,
+        transparent 50%
+      );
   }
-  
+
   .session-card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,247,244,0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(248, 247, 244, 0.8) 100%
+    );
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
+
   /* Button gradients */
   .btn-primary {
     background: linear-gradient(135deg, #000000 0%, #1f1f1f 100%);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .btn-primary:hover {
     background: linear-gradient(135deg, #1f1f1f 0%, #333333 100%);
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   }
-  
+
   .btn-primary:active {
     transform: translateY(0);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Card hover effects */
   .card-hover-effect {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .card-hover-effect:hover {
     transform: translateY(-12px) scale(1.02);
   }
@@ -70,37 +82,40 @@
 
 /* Custom animations */
 @layer utilities {
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
-  
+
   .animate-float-delay-2 {
     animation: float 6s ease-in-out infinite;
     animation-delay: -2s;
   }
-  
+
   .animate-float-delay-3 {
     animation: float 6s ease-in-out infinite;
     animation-delay: -3s;
   }
-  
+
   .animate-float-delay-4 {
     animation: float 6s ease-in-out infinite;
     animation-delay: -4s;
   }
-  
+
   .animate-fade-in {
     animation: fadeIn 0.6s ease-out;
   }
-  
+
   .animate-slide-up {
     animation: slideUp 0.8s ease-out;
   }
-  
+
   .animate-scale-in {
     animation: scaleIn 0.5s ease-out;
   }
-  
+
   .animate-scale-in-delay {
     animation: scaleIn 0.5s ease-out;
     animation-delay: 0.2s;
@@ -109,39 +124,44 @@
 }
 
 @keyframes float {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg); 
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
   }
-  33% { 
-    transform: translateY(-10px) rotate(1deg); 
+  33% {
+    transform: translateY(-10px) rotate(1deg);
   }
-  66% { 
-    transform: translateY(-5px) rotate(-1deg); 
+  66% {
+    transform: translateY(-5px) rotate(-1deg);
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { 
+  from {
     opacity: 0;
     transform: translateY(30px);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes scaleIn {
-  from { 
+  from {
     opacity: 0;
     transform: scale(0.95);
   }
-  to { 
+  to {
     opacity: 1;
     transform: scale(1);
   }
@@ -254,13 +274,4 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }

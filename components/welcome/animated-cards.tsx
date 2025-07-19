@@ -46,7 +46,31 @@ export default function AnimatedCardsSection() {
   }, []);
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-b">
+    <section className="relative py-8 sm:py-12 lg:py-16">
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="absolute top-1/4 -left-48 w-96 h-96 rounded-full blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(134, 239, 172, 0.4), transparent)",
+          }}
+        ></div>
+        <div
+          className="absolute top-0 -right-32 w-80 h-80 rounded-full blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(147, 197, 253, 0.4), transparent)",
+          }}
+        ></div>
+        <div
+          className="absolute bottom-1/4 -right-48 w-72 h-72 rounded-full blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(216, 180, 254, 0.4), transparent)",
+          }}
+        ></div>
+      </div>
+
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl mx-auto">
