@@ -85,6 +85,7 @@
   .bg-gradient-radial {
     background: radial-gradient(circle, var(--tw-gradient-stops));
   }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
