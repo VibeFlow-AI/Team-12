@@ -18,7 +18,6 @@ const options = {
   socketTimeoutMS: 60000,
   connectTimeoutMS: 10000,
   // SSL/TLS configuration for MongoDB Atlas
-  tls: true,
   tlsAllowInvalidCertificates: false,
   tlsAllowInvalidHostnames: false,
   // Connection pool settings
@@ -44,6 +43,19 @@ if (process.env.NODE_ENV === "development") {
 } else {
   client = new MongoClient(enhancedUri, options);
   clientPromise = client.connect();
+    client = new MongoClient(uri, options);
+    globalWithMongo._mongoClientPromise = client.connect().catch((error) => {
+      console.error("MongoDB connection error (alt-development):", error.message);
+      return Promise.reject(error);
+    });
+  }
+  clientPromise = globalWithMongo._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect().catch((error) => {
+    console.error("MongoDB connection error (alt-production):", error.message);
+    return Promise.reject(error);
+  });
 }
 
 export async function getDatabase(): Promise<Db> {
