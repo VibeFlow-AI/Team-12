@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { getDatabase } from "@/lib/mongodb-alt";
 import { ObjectId } from "mongodb";
 import { sessionBookingSchema } from "@/lib/validation";
 import { Session, COLLECTIONS } from "@/lib/models";
+import { 
+  withPermission, 
+  withResourceAccess, 
+  createErrorResponse, 
+  createSuccessResponse,
+  validateRequest
+} from "@/lib/auth-middleware";
+import { 
+  Permission, 
+  Action, 
+  Resource, 
+  AccessContext 
+} from "@/lib/rbac";
 
-// Helper function to check mentor availability
+// Helper function to check mentor availability (same as before)
 async function checkMentorAvailability(
   db: any,
   mentorId: ObjectId,
@@ -67,63 +78,27 @@ async function checkMentorAvailability(
   return { available: true };
 }
 
-// Helper function to calculate session end time
-function calculateSessionEndTime(startTime: string, duration: string): string {
-  const [hour, minute] = startTime.split(':').map(Number);
-  let durationMinutes = 60; // default 1 hour
-
-  switch (duration) {
-    case "30min":
-      durationMinutes = 30;
-      break;
-    case "1hour":
-      durationMinutes = 60;
-      break;
-    case "1.5hours":
-      durationMinutes = 90;
-      break;
-    case "2hours":
-      durationMinutes = 120;
-      break;
-  }
-
-  const totalMinutes = hour * 60 + minute + durationMinutes;
-  const endHour = Math.floor(totalMinutes / 60);
-  const endMinute = totalMinutes % 60;
-
-  return `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
-}
-
-export async function POST(request: NextRequest) {
+// Create booking handler with RBAC
+async function createBookingHandler(
+  request: NextRequest, 
+  user: any, 
+  context: AccessContext
+): Promise<NextResponse> {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Only students can book sessions
-    if (session.user.role !== "student") {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 });
-    }
-
     const body = await request.json();
     
     // Validate input using Zod schema
-    const validationResult = sessionBookingSchema.safeParse(body);
-    if (!validationResult.success) {
-      return NextResponse.json({ 
-        error: "Validation failed", 
-        details: validationResult.error.errors 
-      }, { status: 400 });
+    const validation = validateRequest(body, sessionBookingSchema);
+    if (!validation.success) {
+      return createErrorResponse('Validation failed', 400);
     }
 
-    const { mentorId, sessionDate, sessionTime, duration, subject, message, sessionType } = validationResult.data;
+    const { mentorId, sessionDate, sessionTime, duration, subject, message, sessionType } = validation.data;
     const { bankSlipUrl, paymentStatus } = body; // These are not in the validation schema
 
     const db = await getDatabase();
     
-    // Verify mentor exists and is available
+    // Verify the mentor exists and is available
     const mentor = await db.collection(COLLECTIONS.USERS).findOne({
       _id: new ObjectId(mentorId),
       role: "mentor",
@@ -132,7 +107,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!mentor) {
-      return NextResponse.json({ error: "Mentor not found or not available" }, { status: 404 });
+      return createErrorResponse("Mentor not found or not available", 404);
     }
 
     // Get mentor profile for pricing
@@ -141,7 +116,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!mentorProfile) {
-      return NextResponse.json({ error: "Mentor profile not found" }, { status: 404 });
+      return createErrorResponse("Mentor profile not found", 404);
     }
 
     // Check availability
@@ -181,7 +156,7 @@ export async function POST(request: NextRequest) {
 
     // Create session record
     const sessionData: Partial<Session> = {
-      studentId: new ObjectId(session.user.id),
+      studentId: new ObjectId(user.id),
       mentorId: new ObjectId(mentorId),
       sessionDate: new Date(sessionDate),
       sessionTime: sessionTime,
@@ -200,7 +175,7 @@ export async function POST(request: NextRequest) {
     const result = await db.collection(COLLECTIONS.SESSIONS).insertOne(sessionData);
 
     if (!result.insertedId) {
-      return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });
+      return createErrorResponse("Failed to create booking", 500);
     }
 
     // Create notification for mentor
@@ -208,10 +183,10 @@ export async function POST(request: NextRequest) {
       userId: new ObjectId(mentorId),
       type: "booking",
       title: "New Session Booking",
-      message: `${session.user.name} has booked a ${duration} ${subject} session for ${new Date(sessionDate).toLocaleDateString()} at ${sessionTime}`,
+      message: `${user.name} has booked a ${duration} ${subject} session for ${new Date(sessionDate).toLocaleDateString()} at ${sessionTime}`,
       data: {
         sessionId: result.insertedId.toString(),
-        studentName: session.user.name,
+        studentName: user.name,
         amount: amount
       },
       isRead: false,
@@ -229,8 +204,7 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    return NextResponse.json({
-      success: true,
+    return createSuccessResponse({
       sessionId: result.insertedId.toString(),
       amount: amount,
       currency: "USD",
@@ -239,104 +213,121 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error("Booking creation error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return createErrorResponse("Internal server error", 500);
   }
 }
 
-export async function GET(request: NextRequest) {
+// Get bookings handler with RBAC
+async function getBookingsHandler(
+  request: NextRequest, 
+  user: any, 
+  context: AccessContext
+): Promise<NextResponse> {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = parseInt(searchParams.get('page') || '1');
+    const status = searchParams.get('status');
 
     const db = await getDatabase();
-    const userId = new ObjectId(session.user.id);
+    const userId = new ObjectId(user.id);
     
-    let bookings;
-    
-    if (session.user.role === "student") {
-      // Get bookings where user is the student
-      bookings = await db.collection(COLLECTIONS.SESSIONS)
-        .aggregate([
-          { $match: { studentId: userId } },
-          {
-            $lookup: {
-              from: COLLECTIONS.USERS,
-              localField: "mentorId", 
-              foreignField: "_id",
-              as: "mentor"
-            }
-          },
-          { $unwind: "$mentor" },
-          {
-            $project: {
-              _id: 1,
-              sessionDate: 1,
-              sessionTime: 1,
-              duration: 1,
-              subject: 1,
-              message: 1,
-              status: 1,
-              bankSlipUrl: 1,
-              paymentStatus: 1,
-              createdAt: 1,
-              mentor: {
-                name: "$mentor.name",
-                email: "$mentor.email"
-              }
-            }
-          },
-          { $sort: { createdAt: -1 } }
-        ]).toArray();
+    let query: any = {};
+    let lookupCollection: string;
+    let lookupField: string;
+
+    // Build query based on user role and permissions
+    if (user.role === "student") {
+      query.studentId = userId;
+      lookupCollection = COLLECTIONS.USERS;
+      lookupField = "mentorId";
+    } else if (user.role === "mentor") {
+      query.mentorId = userId;
+      lookupCollection = COLLECTIONS.USERS;
+      lookupField = "studentId";
     } else {
-      // Get bookings where user is the mentor
-      bookings = await db.collection(COLLECTIONS.SESSIONS)
-        .aggregate([
-          { $match: { mentorId: userId } },
-          {
-            $lookup: {
-              from: COLLECTIONS.USERS,
-              localField: "studentId",
-              foreignField: "_id", 
-              as: "student"
-            }
-          },
-          { $unwind: "$student" },
-          {
-            $project: {
-              _id: 1,
-              sessionDate: 1,
-              sessionTime: 1,
-              duration: 1,
-              subject: 1,
-              message: 1,
-              status: 1,
-              bankSlipUrl: 1,
-              paymentStatus: 1,
-              createdAt: 1,
-              student: {
-                name: "$student.name",
-                email: "$student.email"
-              }
-            }
-          },
-          { $sort: { createdAt: -1 } }
-        ]).toArray();
+      // Admin can see all bookings
+      lookupCollection = COLLECTIONS.USERS;
+      lookupField = "studentId";
     }
 
-    return NextResponse.json({
-      success: true,
+    // Add status filter if provided
+    if (status) {
+      query.status = status;
+    }
+
+    // Calculate skip for pagination
+    const skip = (page - 1) * limit;
+
+    // Get bookings with user information
+    const bookings = await db.collection(COLLECTIONS.SESSIONS)
+      .aggregate([
+        { $match: query },
+        {
+          $lookup: {
+            from: lookupCollection,
+            localField: lookupField,
+            foreignField: "_id",
+            as: "relatedUser"
+          }
+        },
+        { $unwind: "$relatedUser" },
+        {
+          $project: {
+            _id: 1,
+            sessionDate: 1,
+            sessionTime: 1,
+            duration: 1,
+            subject: 1,
+            message: 1,
+            status: 1,
+            bankSlipUrl: 1,
+            paymentStatus: 1,
+            amount: 1,
+            createdAt: 1,
+            relatedUser: {
+              name: "$relatedUser.name",
+              email: "$relatedUser.email"
+            }
+          }
+        },
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit }
+      ]).toArray();
+
+    // Get total count for pagination
+    const totalCount = await db.collection(COLLECTIONS.SESSIONS).countDocuments(query);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return createSuccessResponse({
       bookings: bookings.map(booking => ({
         ...booking,
         id: booking._id.toString(),
         _id: undefined
-      }))
+      })),
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalCount: totalCount,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+      }
     });
 
   } catch (error) {
     console.error("Error fetching bookings:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return createErrorResponse("Internal server error", 500);
   }
 }
+
+// Export handlers with RBAC protection
+export const POST = withPermission(
+  Permission.BOOK_SESSION,
+  createBookingHandler
+);
+
+export const GET = withPermission(
+  Permission.VIEW_OWN_SESSIONS,
+  getBookingsHandler
+);

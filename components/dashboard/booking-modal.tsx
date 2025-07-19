@@ -56,6 +56,7 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const [sessionType, setSessionType] = useState<string>("one_on_one");
   const [isLoading, setIsLoading] = useState(false);
   
   // Flow state management
@@ -210,7 +211,8 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
         sessionTime: selectedTime,
         subject: subject.trim(),
         message: message.trim(),
-        duration: mentor?.duration || "1 hour",
+        sessionType: sessionType,
+        duration: mentor?.duration || "1hour",
         bankSlipUrl: slipUrl,
         paymentStatus: "pending_verification"
       };
@@ -239,6 +241,7 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
     setSelectedTime("");
     setSubject("");
     setMessage("");
+    setSessionType("one_on_one");
     onClose();
   };
 
@@ -416,6 +419,19 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
                         </div>
 
                         <div>
+                          <Label htmlFor="sessionType">Session Type *</Label>
+                          <Select value={sessionType} onValueChange={setSessionType}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select session type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="one_on_one">One-on-One Session</SelectItem>
+                              <SelectItem value="group">Group Session</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
                           <Label htmlFor="message">Message to mentor (optional)</Label>
                           <Textarea
                             id="message"
@@ -431,6 +447,7 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
                           <div className="space-y-1 text-sm text-blue-800">
                             <p><strong>Duration:</strong> {mentor.duration}</p>
                             <p><strong>Subject:</strong> {subject || "Not selected"}</p>
+                            <p><strong>Session Type:</strong> {sessionType === "one_on_one" ? "One-on-One" : "Group Session"}</p>
                             <p><strong>Date:</strong> {selectedDate ? formatSelectedDate() : "Not selected"}</p>
                             <p><strong>Time:</strong> {selectedTime || "Not selected"}</p>
                           </div>
