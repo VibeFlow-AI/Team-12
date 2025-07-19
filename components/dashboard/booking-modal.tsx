@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import BookingConfirmation from "./booking-confirmation";
+import BankSlipUpload from "./bank-slip-upload";
 import { cn } from "@/lib/utils";
 import { 
   X, 
@@ -16,7 +16,8 @@ import {
   Calendar as CalendarIcon,
   User,
   MessageSquare,
-  Loader2
+  Loader2,
+  Check
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -57,9 +58,10 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   
-  // Confirmation modal state
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  // Flow state management
+  const [currentStep, setCurrentStep] = useState<'booking' | 'payment' | 'confirmation'>('booking');
   const [bookingDetails, setBookingDetails] = useState<any>(null);
+  const [bankSlipUrl, setBankSlipUrl] = useState<string>("");
 
   useEffect(() => {
     if (isOpen) {
@@ -178,28 +180,42 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
       return;
     }
 
+    // Prepare booking details for payment step
+    setBookingDetails({
+      mentorName: mentor!.name,
+      date: formatSelectedDate(),
+      time: selectedTime,
+      subject: subject,
+      duration: mentor!.duration
+    });
+
+    // Move to payment step
+    setCurrentStep('payment');
+  };
+
+  const handleBankSlipUpload = (slipUrl: string) => {
+    setBankSlipUrl(slipUrl);
+    setCurrentStep('confirmation');
+    
+    // Now confirm the booking with payment proof
+    confirmBookingWithPayment(slipUrl);
+  };
+
+  const confirmBookingWithPayment = async (slipUrl: string) => {
     setIsLoading(true);
     try {
       const bookingData = {
         mentorId: mentor?.id,
-        sessionDate: selectedDate.toISOString(),
+        sessionDate: selectedDate!.toISOString(),
         sessionTime: selectedTime,
         subject: subject.trim(),
         message: message.trim(),
-        duration: mentor?.duration || "1 hour"
+        duration: mentor?.duration || "1 hour",
+        bankSlipUrl: slipUrl,
+        paymentStatus: "pending_verification"
       };
 
       await onConfirm(bookingData);
-      
-      // Show confirmation modal
-      setBookingDetails({
-        mentorName: mentor.name,
-        date: formatSelectedDate(),
-        time: selectedTime,
-        subject: subject,
-        duration: mentor.duration
-      });
-      setShowConfirmation(true);
       
       // Reset form
       setSelectedDate(null);
@@ -208,9 +224,22 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
       setMessage("");
     } catch (error) {
       console.error("Booking error:", error);
+      setCurrentStep('payment'); // Go back to payment step on error
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    // Reset all state when closing
+    setCurrentStep('booking');
+    setBankSlipUrl("");
+    setBookingDetails(null);
+    setSelectedDate(null);
+    setSelectedTime("");
+    setSubject("");
+    setMessage("");
+    onClose();
   };
 
   if (!isOpen || !mentor) return null;
@@ -218,227 +247,284 @@ export default function BookingModal({ isOpen, onClose, mentor, onConfirm }: Boo
   const calendarDays = generateCalendarDays();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <div className="relative w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-neutral-100">
-            <div className="flex items-center space-x-4">
-              <div 
-                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                style={{
-                  background: `linear-gradient(135deg, ${mentor.avatarColor.from}, ${mentor.avatarColor.to})`
-                }}
-              >
-                {getInitials(mentor.name)}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-neutral-900">
-                  Book a session with {mentor.name}
-                </h2>
-                <p className="text-neutral-600">
-                  Choose your preferred date and time
-                </p>
-              </div>
-            </div>
-            
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="p-6">
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Calendar Section */}
-              <div>
-                <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center">
-                  <CalendarIcon className="w-5 h-5 mr-2" />
-                  Choose a date
-                </h3>
-                
-                {/* Calendar Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <button
-                    onClick={() => navigateMonth('prev')}
-                    className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  
-                  <h4 className="text-lg font-semibold text-neutral-900">
-                    {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-                  </h4>
-                  
-                  <button
-                    onClick={() => navigateMonth('next')}
-                    className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={currentStep === 'payment' ? undefined : handleClose}
+        />
+        
+        {/* Modal */}
+        <div className="relative w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 animate-in zoom-in-95 duration-300">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-neutral-100">
+              <div className="flex items-center space-x-4">
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                  style={{
+                    background: `linear-gradient(135deg, ${mentor.avatarColor.from}, ${mentor.avatarColor.to})`
+                  }}
+                >
+                  {getInitials(mentor.name)}
                 </div>
-
-                {/* Calendar Grid */}
-                <div className="grid grid-cols-7 gap-1 mb-6">
-                  {/* Day Headers */}
-                  {daysOfWeek.map(day => (
-                    <div key={day} className="p-2 text-center text-sm font-medium text-neutral-500">
-                      {day}
-                    </div>
-                  ))}
-                  
-                  {/* Calendar Days */}
-                  {calendarDays.map((day, index) => (
-                    <button
-                      key={index}
-                      data-date={day.date}
-                      onClick={() => selectDate(day)}
-                      disabled={!day.isCurrentMonth || day.isPast}
-                      className={cn(
-                        "aspect-square p-2 text-sm font-medium rounded-lg transition-all duration-200",
-                        "hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-black/20",
-                        "hover:scale-105 active:scale-95",
-                        {
-                          "text-neutral-300 cursor-not-allowed": !day.isCurrentMonth || day.isPast,
-                          "text-neutral-900": day.isCurrentMonth && !day.isPast,
-                          "bg-blue-50 text-blue-600 font-semibold": day.isToday,
-                          "bg-black text-white shadow-lg": selectedDate && day.fullDate && 
-                            selectedDate.toDateString() === day.fullDate.toDateString()
-                        }
-                      )}
-                    >
-                      {day.date}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Selected Date Display */}
-                {selectedDate && (
-                  <div className="p-4 bg-neutral-50 rounded-lg">
-                    <p className="text-sm text-neutral-600">Selected date:</p>
-                    <p className="font-semibold text-neutral-900">{formatSelectedDate()}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Time and Details Section */}
-              <div className="space-y-6">
-                {/* Time Selection */}
                 <div>
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center">
-                    <Clock className="w-5 h-5 mr-2" />
-                    Choose a time
-                  </h3>
-                  
-                  <div className="grid grid-cols-3 gap-3">
-                    {timeSlots.map(time => (
-                      <button
-                        key={time}
-                        onClick={() => setSelectedTime(time)}
-                        className={cn(
-                          "p-3 text-sm font-medium rounded-lg border-2 transition-all duration-200",
-                          "hover:border-neutral-400 hover:bg-neutral-50",
-                          selectedTime === time
-                            ? "bg-black text-white border-black"
-                            : "bg-white text-neutral-900 border-neutral-200"
-                        )}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Session Details */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-neutral-900 flex items-center">
-                    <User className="w-5 h-5 mr-2" />
-                    Session details
-                  </h3>
-                  
-                  <div>
-                    <Label htmlFor="subject">Subject *</Label>
-                    <Select value={subject} onValueChange={setSubject}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a subject" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {mentor.subjects.map(subj => (
-                          <SelectItem key={subj} value={subj}>
-                            {subj}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="General">General Mentoring</SelectItem>
-                        <SelectItem value="Career">Career Guidance</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">Message to mentor (optional)</Label>
-                    <Textarea
-                      id="message"
-                      placeholder="Tell your mentor what you'd like to focus on in this session..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Session Summary</h4>
-                    <div className="space-y-1 text-sm text-blue-800">
-                      <p><strong>Duration:</strong> {mentor.duration}</p>
-                      <p><strong>Subject:</strong> {subject || "Not selected"}</p>
-                      <p><strong>Date:</strong> {selectedDate ? formatSelectedDate() : "Not selected"}</p>
-                      <p><strong>Time:</strong> {selectedTime || "Not selected"}</p>
-                    </div>
-                  </div>
+                  <h2 className="text-2xl font-bold text-neutral-900">
+                    Book a session with {mentor.name}
+                  </h2>
+                  <p className="text-neutral-600">
+                    Choose your preferred date and time
+                  </p>
                 </div>
               </div>
+              
+              <button
+                onClick={handleClose}
+                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t border-neutral-100">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
+            <div className="p-6">
+              {currentStep === 'booking' && (
+                <>
+                  <div className="grid lg:grid-cols-2 gap-8">
+                    {/* Calendar Section */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center">
+                        <CalendarIcon className="w-5 h-5 mr-2" />
+                        Choose a date
+                      </h3>
+                      
+                      {/* Calendar Header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <button
+                          onClick={() => navigateMonth('prev')}
+                          className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        
+                        <h4 className="text-lg font-semibold text-neutral-900">
+                          {months[currentDate.getMonth()]} {currentDate.getFullYear()}
+                        </h4>
+                        
+                        <button
+                          onClick={() => navigateMonth('next')}
+                          className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      {/* Calendar Grid */}
+                      <div className="grid grid-cols-7 gap-1 mb-6">
+                        {/* Day Headers */}
+                        {daysOfWeek.map(day => (
+                          <div key={day} className="p-2 text-center text-sm font-medium text-neutral-500">
+                            {day}
+                          </div>
+                        ))}
+                        
+                        {/* Calendar Days */}
+                        {calendarDays.map((day, index) => (
+                          <button
+                            key={index}
+                            data-date={day.date}
+                            onClick={() => selectDate(day)}
+                            disabled={!day.isCurrentMonth || day.isPast}
+                            className={cn(
+                              "aspect-square p-2 text-sm font-medium rounded-lg transition-all duration-200",
+                              "hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-black/20",
+                              "hover:scale-105 active:scale-95",
+                              {
+                                "text-neutral-300 cursor-not-allowed": !day.isCurrentMonth || day.isPast,
+                                "text-neutral-900": day.isCurrentMonth && !day.isPast,
+                                "bg-blue-50 text-blue-600 font-semibold": day.isToday,
+                                "bg-black text-white shadow-lg": selectedDate && day.fullDate && 
+                                  selectedDate.toDateString() === day.fullDate.toDateString()
+                              }
+                            )}
+                          >
+                            {day.date}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Selected Date Display */}
+                      {selectedDate && (
+                        <div className="p-4 bg-neutral-50 rounded-lg">
+                          <p className="text-sm text-neutral-600">Selected date:</p>
+                          <p className="font-semibold text-neutral-900">{formatSelectedDate()}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Time and Details Section */}
+                    <div className="space-y-6">
+                      {/* Time Selection */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center">
+                          <Clock className="w-5 h-5 mr-2" />
+                          Choose a time
+                        </h3>
+                        
+                        <div className="grid grid-cols-3 gap-3">
+                          {timeSlots.map(time => (
+                            <button
+                              key={time}
+                              onClick={() => setSelectedTime(time)}
+                              className={cn(
+                                "p-3 text-sm font-medium rounded-lg border-2 transition-all duration-200",
+                                "hover:border-neutral-400 hover:bg-neutral-50",
+                                selectedTime === time
+                                  ? "bg-black text-white border-black"
+                                  : "bg-white text-neutral-900 border-neutral-200"
+                              )}
+                            >
+                              {time}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Session Details */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-neutral-900 flex items-center">
+                          <User className="w-5 h-5 mr-2" />
+                          Session details
+                        </h3>
+                        
+                        <div>
+                          <Label htmlFor="subject">Subject *</Label>
+                          <Select value={subject} onValueChange={setSubject}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a subject" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {mentor.subjects.map(subj => (
+                                <SelectItem key={subj} value={subj}>
+                                  {subj}
+                                </SelectItem>
+                              ))}
+                              <SelectItem value="General">General Mentoring</SelectItem>
+                              <SelectItem value="Career">Career Guidance</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="message">Message to mentor (optional)</Label>
+                          <Textarea
+                            id="message"
+                            placeholder="Tell your mentor what you'd like to focus on in this session..."
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            rows={3}
+                          />
+                        </div>
+
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                          <h4 className="font-medium text-blue-900 mb-2">Session Summary</h4>
+                          <div className="space-y-1 text-sm text-blue-800">
+                            <p><strong>Duration:</strong> {mentor.duration}</p>
+                            <p><strong>Subject:</strong> {subject || "Not selected"}</p>
+                            <p><strong>Date:</strong> {selectedDate ? formatSelectedDate() : "Not selected"}</p>
+                            <p><strong>Time:</strong> {selectedTime || "Not selected"}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-end space-x-4 mt-8 pt-6 border-t border-neutral-100">
+                    <Button
+                      variant="outline"
+                      onClick={handleClose}
+                      disabled={isLoading}
+                    >
+                      Cancel
+                    </Button>
+                    
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={!selectedDate || !selectedTime || !subject.trim() || isLoading}
+                      className="bg-black hover:bg-neutral-800 text-white flex items-center space-x-2"
+                    >
+                      {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                      <span>{isLoading ? "Booking..." : "Continue to Payment"}</span>
+                    </Button>
+                  </div>
+                </>
+              )}
               
-              <Button
-                onClick={handleSubmit}
-                disabled={!selectedDate || !selectedTime || !subject.trim() || isLoading}
-                className="bg-black hover:bg-neutral-800 text-white flex items-center space-x-2"
-              >
-                {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                <span>{isLoading ? "Booking..." : "Confirm Booking"}</span>
-              </Button>
+              {/* Booking Confirmation Step */}
+              {currentStep === 'confirmation' && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-neutral-900 mb-2">
+                    Booking Confirmed!
+                  </h3>
+                  <p className="text-neutral-600 mb-6">
+                    Your session has been booked successfully. Your mentor will review the payment and confirm the session.
+                  </p>
+                  
+                  {/* Session Summary */}
+                  <div className="bg-neutral-50 rounded-lg p-6 text-left max-w-md mx-auto">
+                    <h4 className="font-semibold text-neutral-900 mb-4">Session Details</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-neutral-600">Mentor:</span>
+                        <span className="font-medium">{bookingDetails?.mentorName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-600">Date:</span>
+                        <span className="font-medium">{bookingDetails?.date}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-600">Time:</span>
+                        <span className="font-medium">{bookingDetails?.time}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-600">Subject:</span>
+                        <span className="font-medium">{bookingDetails?.subject}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-600">Duration:</span>
+                        <span className="font-medium">{bookingDetails?.duration}</span>
+                      </div>
+                      <div className="flex justify-between border-t pt-2 mt-3">
+                        <span className="text-neutral-600">Payment Status:</span>
+                        <span className="text-amber-600 font-medium">Pending Verification</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button
+                    onClick={handleClose}
+                    className="mt-6 bg-black hover:bg-neutral-800 text-white"
+                  >
+                    Done
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
       
-      {/* Booking Confirmation Modal */}
-      <BookingConfirmation
-        isOpen={showConfirmation}
-        onClose={() => {
-          setShowConfirmation(false);
-          onClose();
-        }}
-        bookingDetails={bookingDetails}
+      {/* Bank Slip Upload Modal */}
+      <BankSlipUpload
+        isOpen={currentStep === 'payment'}
+        onClose={() => setCurrentStep('booking')}
+        onUploadComplete={handleBankSlipUpload}
+        sessionDetails={bookingDetails}
       />
-    </div>
+    </>
   );
 }

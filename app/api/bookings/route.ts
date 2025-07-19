@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { mentorId, sessionDate, sessionTime, duration, subject, message } = body;
+    const { mentorId, sessionDate, sessionTime, duration, subject, message, bankSlipUrl, paymentStatus } = body;
 
     if (!mentorId) {
       return NextResponse.json({ error: "Mentor ID is required" }, { status: 400 });
@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
       subject: subject || "General",
       message: message || "",
       status: "pending", // pending, confirmed, completed, cancelled
+      bankSlipUrl: bankSlipUrl || null,
+      paymentStatus: paymentStatus || "pending_verification", // pending_verification, verified, rejected
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -111,10 +113,13 @@ export async function GET(request: NextRequest) {
             $project: {
               _id: 1,
               sessionDate: 1,
+              sessionTime: 1,
               duration: 1,
               subject: 1,
               message: 1,
               status: 1,
+              bankSlipUrl: 1,
+              paymentStatus: 1,
               createdAt: 1,
               mentor: {
                 name: "$mentor.name",
@@ -142,10 +147,13 @@ export async function GET(request: NextRequest) {
             $project: {
               _id: 1,
               sessionDate: 1,
+              sessionTime: 1,
               duration: 1,
               subject: 1,
               message: 1,
               status: 1,
+              bankSlipUrl: 1,
+              paymentStatus: 1,
               createdAt: 1,
               student: {
                 name: "$student.name",
