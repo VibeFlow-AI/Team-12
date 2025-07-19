@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { formatDate, formatDateLong } from "@/lib/date-utils";
 import { Button } from "@/components/ui/button";
+import ClientOnly from "@/components/client-only";
 import {
   Calendar,
   Clock,
@@ -106,12 +108,9 @@ function SessionDetailsModal({ isOpen, onClose, session }: SessionDetailsModalPr
             <div className="flex justify-between">
               <span className="text-neutral-600">Date:</span>
               <span className="font-medium">
-                {new Date(session.sessionDate).toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+                <ClientOnly fallback={<span className="animate-pulse">Loading...</span>}>
+                  {formatDateLong(session.sessionDate)}
+                </ClientOnly>
               </span>
             </div>
             
@@ -362,7 +361,9 @@ export default function BookedSessionsPage() {
                     <div className="flex items-center space-x-4 text-sm text-neutral-600">
                       <span className="flex items-center">
                         <Calendar className="w-4 h-4 mr-1" />
-                        {new Date(booking.sessionDate).toLocaleDateString()}
+                        <ClientOnly fallback={<span className="animate-pulse">Loading...</span>}>
+                          {formatDate(booking.sessionDate)}
+                        </ClientOnly>
                       </span>
                       <span className="flex items-center">
                         <Clock className="w-4 h-4 mr-1" />

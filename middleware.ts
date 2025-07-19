@@ -28,6 +28,13 @@ export default withAuth(
       return NextResponse.redirect(new URL("/samples", req.url));
     }
 
+    // Redirect mentors to mentor dashboard
+    if (token && token.role === "mentor" && token.onboardingCompleted) {
+      if (pathname === "/dashboard" || pathname === "/samples") {
+        return NextResponse.redirect(new URL("/mentor/dashboard", req.url));
+      }
+    }
+
     return NextResponse.next();
   },
   {
@@ -58,5 +65,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/samples/:path*", "/auth/:path*", "/onboarding/:path*"],
+  matcher: ["/samples/:path*", "/auth/:path*", "/onboarding/:path*", "/dashboard/:path*", "/mentor/:path*"],
 };
