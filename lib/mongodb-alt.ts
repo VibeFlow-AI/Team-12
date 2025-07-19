@@ -6,14 +6,28 @@ if (!uri) {
   throw new Error("Please add your MongoDB URI to .env.local");
 }
 
+// Use the original URI as MongoDB srv:// already includes SSL by default
+const enhancedUri = uri;
+
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 const options = {
+  // Connection timeouts
+  serverSelectionTimeoutMS: 10000,
+  socketTimeoutMS: 60000,
+  connectTimeoutMS: 10000,
+  // SSL/TLS configuration for MongoDB Atlas
+  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidHostnames: false,
+  // Connection pool settings
   maxPoolSize: 10,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  // Removed SSL/TLS options to fix connection conflicts
+  minPoolSize: 5,
+  maxIdleTimeMS: 30000,
+  waitQueueTimeoutMS: 10000,
+  // Retry configuration
+  retryWrites: true,
+  retryReads: true,
 };
 
 if (process.env.NODE_ENV === "development") {
@@ -22,6 +36,13 @@ if (process.env.NODE_ENV === "development") {
   };
 
   if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(enhancedUri, options);
+    globalWithMongo._mongoClientPromise = client.connect();
+  }
+  clientPromise = globalWithMongo._mongoClientPromise;
+} else {
+  client = new MongoClient(enhancedUri, options);
+  clientPromise = client.connect();
     client = new MongoClient(uri, options);
     globalWithMongo._mongoClientPromise = client.connect().catch((error) => {
       console.error("MongoDB connection error (alt-development):", error.message);
@@ -38,8 +59,33 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export async function getDatabase(): Promise<Db> {
-  const client = await clientPromise;
-  return client.db("team_12");
+  try {
+    const client = await clientPromise;
+    return client.db("team_12");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    
+    // If it's an SSL error, try with a simplified connection
+    if (error.message?.includes('SSL') || error.message?.includes('TLS')) {
+      console.log("Attempting simplified SSL connection...");
+      
+      const simplifiedOptions = {
+        serverSelectionTimeoutMS: 10000,
+        tls: true,
+      };
+      
+      try {
+        const fallbackClient = new MongoClient(uri, simplifiedOptions);
+        await fallbackClient.connect();
+        return fallbackClient.db("team_12");
+      } catch (fallbackError) {
+        console.error("Fallback connection also failed:", fallbackError);
+        throw fallbackError;
+      }
+    }
+    
+    throw error;
+  }
 }
 
 export async function connectToDatabase() {

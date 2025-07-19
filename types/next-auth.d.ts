@@ -6,6 +6,7 @@ declare module "next-auth" {
     email: string;
     name: string;
     role: string;
+    onboardingCompleted: boolean;
   }
 
   interface Session {
@@ -14,6 +15,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       role: string;
+      onboardingCompleted: boolean;
     };
   }
 }

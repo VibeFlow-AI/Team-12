@@ -1,17 +1,17 @@
-import SampleView from "@/components/sample-view";
-import { getSamples } from "@/server/actions/sample";
+import Sidebar from "@/components/dashboard/sidebar";
+import DiscoverPage from "@/components/dashboard/discover-page";
 import Navbar from "@/components/navbar";
 
-async function SamplesPage() {
-  const result = await getSamples();
-  const samples = result.success ? result.samples : [];
-
+export default function SamplesPage() {
   return (
-    <div>
+    <div className="min-h-screen bg-neutral-50">
       <Navbar />
-      <SampleView initialSamples={samples} />
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 p-6 lg:p-8">
+          <DiscoverPage />
+        </main>
+      </div>
     </div>
   );
 }
-
-export default SamplesPage;
