@@ -34,6 +34,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          onboardingCompleted: user.onboardingCompleted || false,
         };
       },
     }),
@@ -45,17 +46,32 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.onboardingCompleted = user.onboardingCompleted;
       }
+      
+      // Refresh token data when session is updated
+      if (trigger === "update" && token.id) {
+        const db = await getDatabase();
+        const updatedUser = await db.collection("users").findOne({ 
+          _id: new (await import("mongodb")).ObjectId(token.id as string) 
+        });
+        
+        if (updatedUser) {
+          token.onboardingCompleted = updatedUser.onboardingCompleted || false;
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.onboardingCompleted = token.onboardingCompleted as boolean;
       }
       return session;
     },
