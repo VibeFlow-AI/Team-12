@@ -74,6 +74,6 @@ export async function getSamples(): Promise<{ success: boolean; samples: Sample[
     return { success: true, samples };
   } catch (error) {
     console.error("Error fetching samples:", error);
-    return { error: "Failed to fetch samples", samples: [] };
+    return { success: false, error: "Failed to fetch samples", samples: [] };
   }
 }

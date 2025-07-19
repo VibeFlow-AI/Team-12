@@ -4,13 +4,95 @@
       {
         "id": 1,
         "title": "Setup Project Repository",
-        "description": "Initialize the project repository with version control and basic structure.",
-        "details": "Create a Git repository and set up the initial project structure. Include a README file, .gitignore, and basic folder structure for frontend and backend development.",
-        "testStrategy": "Verify repository setup by cloning and checking the initial structure.",
-        "priority": "medium",
-        "dependencies": [],
+        "description": "Initialize the project repository with version control, basic structure, and Railway deployment configuration.",
         "status": "pending",
-        "subtasks": []
+        "dependencies": [],
+        "priority": "medium",
+        "details": "Create a Git repository and set up the initial project structure. Include a README file, .gitignore, and basic folder structure for frontend and backend development. Set up Railway project and configuration, install Railway CLI, configure environment variables for Railway, set up database connection for Railway PostgreSQL, and configure Next.js deployment for Railway. Include Railway-specific folder structure and configuration files.",
+        "testStrategy": "Verify repository setup by cloning and checking the initial structure. Ensure Railway deployment configuration is correct by deploying a test instance and verifying connectivity to the PostgreSQL database.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Git Repository",
+            "description": "Initialize a new Git repository for the project.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Set Up Initial Project Structure",
+            "description": "Create basic folder structure for frontend and backend development.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Add README and .gitignore",
+            "description": "Include a README file and a .gitignore file in the repository.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Set Up Railway Project",
+            "description": "Create and configure a new project on Railway.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Install Railway CLI",
+            "description": "Install the Railway CLI tool for managing deployments.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Configure Environment Variables for Railway",
+            "description": "Set up necessary environment variables for Railway deployment.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Set Up Database Connection for Railway PostgreSQL",
+            "description": "Configure the connection to Railway's PostgreSQL database.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Configure Next.js Deployment for Railway",
+            "description": "Set up Next.js deployment configuration specific to Railway.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 9,
+            "title": "Create Railway-Specific Folder Structure and Configuration Files",
+            "description": "Organize the project with Railway-specific folders and configuration files.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 2,
@@ -29,14 +111,60 @@
         "id": 3,
         "title": "Design Database Schema",
         "description": "Create the database schema for users, student profiles, mentor profiles, and sessions.",
-        "details": "Use PostgreSQL to design and implement the database schema. Ensure proper indexing and relationships between tables. Use UUIDs for primary keys.",
-        "testStrategy": "Validate schema by running migrations and checking table relationships and constraints.",
-        "priority": "medium",
+        "status": "pending",
         "dependencies": [
           1
         ],
-        "status": "pending",
-        "subtasks": []
+        "priority": "medium",
+        "details": "Use PostgreSQL to design and implement the database schema. Ensure proper indexing and relationships between tables. Use UUIDs for primary keys. Set up the database for Railway PostgreSQL deployment, including connection string configuration and environment variables. Implement database migrations and schema deployment with seeding for the Railway environment.",
+        "testStrategy": "Validate schema by running migrations and checking table relationships and constraints. Ensure the Railway PostgreSQL setup is correctly configured by testing the connection string and environment variables.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up Railway PostgreSQL database",
+            "description": "Configure the Railway PostgreSQL database instance and ensure connectivity.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Configure connection string for Railway",
+            "description": "Set up the connection string for the Railway PostgreSQL database in the application configuration.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement database migrations for Railway",
+            "description": "Create and run database migrations specifically for the Railway environment.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Set up Railway database environment variables",
+            "description": "Configure necessary environment variables for the Railway PostgreSQL database.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Deploy and seed schema for Railway PostgreSQL",
+            "description": "Deploy the database schema and seed initial data for the Railway PostgreSQL environment.",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
       },
       {
         "id": 4,
@@ -532,75 +660,75 @@
       {
         "id": 14,
         "title": "Optimize Performance and Scalability",
-        "description": "Enhance platform performance and prepare for scalability.",
-        "details": "Implement caching strategies using Redis, optimize database queries, and set up load balancing. Use performance monitoring tools for ongoing optimization.",
-        "testStrategy": "Conduct load testing and monitor performance metrics under high traffic.",
-        "priority": "medium",
+        "description": "Enhance platform performance and prepare for scalability with Railway-specific optimizations.",
+        "status": "pending",
         "dependencies": [
           3,
           10
         ],
-        "status": "pending",
+        "priority": "medium",
+        "details": "Implement Railway Redis setup for caching, optimize Railway PostgreSQL, and perform Railway deployment optimization. Use Railway environment-specific performance tuning and monitoring options for ongoing optimization.",
+        "testStrategy": "Conduct load testing using Railway's tools and monitor performance metrics under high traffic.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Implement Caching Strategies",
-            "description": "Develop and integrate caching mechanisms to enhance data retrieval speed.",
-            "dependencies": [],
-            "details": "Use Redis to implement caching strategies for frequently accessed data to reduce database load and improve response times.",
+            "title": "Implement Railway Redis Caching",
+            "description": "Develop and integrate Railway Redis caching mechanisms to enhance data retrieval speed.",
             "status": "pending",
+            "dependencies": [],
+            "details": "Use Railway's Redis setup to implement caching strategies for frequently accessed data to reduce database load and improve response times.",
             "testStrategy": ""
           },
           {
             "id": 2,
-            "title": "Optimize Database Queries",
-            "description": "Analyze and optimize database queries to improve performance.",
-            "dependencies": [],
-            "details": "Review current database queries, identify bottlenecks, and refactor queries for efficiency. Consider using indexing and query optimization techniques.",
+            "title": "Optimize Railway PostgreSQL",
+            "description": "Analyze and optimize Railway PostgreSQL database queries to improve performance.",
             "status": "pending",
+            "dependencies": [],
+            "details": "Review current database queries on Railway, identify bottlenecks, and refactor queries for efficiency. Consider using indexing and query optimization techniques.",
             "testStrategy": ""
           },
           {
             "id": 3,
-            "title": "Set Up Load Balancing",
-            "description": "Implement load balancing to distribute incoming traffic across multiple servers.",
-            "dependencies": [],
-            "details": "Configure a load balancer to evenly distribute traffic and ensure high availability and reliability of the platform.",
+            "title": "Perform Railway Deployment Optimization",
+            "description": "Optimize deployment settings specific to Railway for better performance.",
             "status": "pending",
+            "dependencies": [],
+            "details": "Adjust Railway deployment configurations to enhance performance and scalability, focusing on environment-specific tuning.",
             "testStrategy": ""
           },
           {
             "id": 4,
-            "title": "Integrate Performance Monitoring Tools",
-            "description": "Set up tools to monitor and analyze platform performance.",
-            "dependencies": [],
-            "details": "Use performance monitoring tools like New Relic or Datadog to track key metrics and identify performance issues in real-time.",
+            "title": "Integrate Railway Monitoring Tools",
+            "description": "Set up Railway's monitoring tools to track and analyze platform performance.",
             "status": "pending",
+            "dependencies": [],
+            "details": "Use Railway's built-in monitoring options to track key metrics and identify performance issues in real-time.",
             "testStrategy": ""
           },
           {
             "id": 5,
             "title": "Conduct Load Testing",
             "description": "Perform load testing to evaluate platform performance under high traffic conditions.",
+            "status": "pending",
             "dependencies": [
               1,
               2,
               3,
               4
             ],
-            "details": "Use tools like Apache JMeter or LoadRunner to simulate high traffic and assess the platform's scalability and performance.",
-            "status": "pending",
+            "details": "Use Railway's tools to simulate high traffic and assess the platform's scalability and performance.",
             "testStrategy": ""
           },
           {
             "id": 6,
             "title": "Analyze Performance Metrics",
             "description": "Review and analyze performance data to identify areas for improvement.",
+            "status": "pending",
             "dependencies": [
               5
             ],
-            "details": "Analyze the data collected from performance monitoring and load testing to identify bottlenecks and areas for further optimization.",
-            "status": "pending",
+            "details": "Analyze the data collected from Railway's performance monitoring and load testing to identify bottlenecks and areas for further optimization.",
             "testStrategy": ""
           }
         ]
@@ -711,11 +839,82 @@
             "testStrategy": ""
           }
         ]
+      },
+      {
+        "id": 16,
+        "title": "Deploy Next.js App on Railway",
+        "description": "Set up and deploy a Next.js application on Railway with environment-specific configurations and automation.",
+        "details": "1. **Railway Project Deployment Setup**: Initialize a new Railway project for the Next.js application. Ensure the project is linked to the Git repository and configure the deployment settings.\n\n2. **Environment Variables Configuration**: Define and configure necessary environment variables for both staging and production environments. Ensure sensitive data is securely stored and accessed.\n\n3. **Domain Setup and Custom Domain Configuration**: Set up the default Railway domain and configure a custom domain for production. Ensure DNS settings are correctly configured and SSL certificates are applied.\n\n4. **Production Deployment Pipeline**: Establish a CI/CD pipeline using Railway's deployment features. Automate the deployment process to ensure seamless updates from the main branch.\n\n5. **Railway Database Connection Verification**: Verify the connection to the Railway PostgreSQL database. Ensure the connection string and environment variables are correctly set up and tested.\n\n6. **Post-deployment Testing and Monitoring**: Implement monitoring tools to track application performance and errors post-deployment. Set up alerts for critical issues.\n\n7. **Railway CLI Deployment Automation**: Utilize the Railway CLI to automate deployments and manage environment configurations. Document CLI commands for common deployment tasks.\n\n8. **Environment-specific Configurations**: Configure the application to handle different environments (staging and production) with specific settings for each. Ensure that environment-specific variables and configurations are correctly applied.",
+        "testStrategy": "1. Deploy the Next.js application to a Railway staging environment and verify successful deployment.\n2. Test environment variable configurations by checking application behavior in both staging and production environments.\n3. Validate domain setup by accessing the application via the custom domain and ensuring SSL is active.\n4. Check the CI/CD pipeline by pushing changes to the main branch and confirming automatic deployment.\n5. Test database connectivity by performing CRUD operations and verifying data persistence.\n6. Monitor application performance using Railway's monitoring tools and ensure alerts are configured.\n7. Use the Railway CLI to perform a deployment and verify that the process is automated and efficient.\n8. Confirm that environment-specific configurations are correctly applied by testing features unique to each environment.",
+        "status": "in-progress",
+        "dependencies": [
+          1,
+          3,
+          14
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Initialize Railway Project",
+            "description": "Set up a new Railway project for the Next.js application and link it to the Git repository.",
+            "dependencies": [],
+            "details": "Create a new project on Railway, connect it to the GitHub repository, and configure basic deployment settings.\n<info added on 2025-07-19T04:05:34.817Z>\n✅ COMPLETED: Successfully initialized Railway project for EduVibe - Project: vibeflow - Workspace: Casey Decker's Projects - Project URL: https://railway.com/project/b72e43db-d0a5-48a6-ac47-3d85aa4b0088 - Railway CLI logged in as Shashila Heshan - Ready to proceed with services setup\n</info added on 2025-07-19T04:05:34.817Z>",
+            "status": "pending",
+            "testStrategy": "Verify the project setup by checking the connection to the Git repository and ensuring the initial deployment settings are correct."
+          },
+          {
+            "id": 2,
+            "title": "Configure Environment Variables",
+            "description": "Set up environment variables for staging and production environments.",
+            "dependencies": [
+              1
+            ],
+            "details": "Define necessary environment variables and ensure they are securely stored and accessible in both staging and production environments.",
+            "status": "pending",
+            "testStrategy": "Test application behavior in staging and production to confirm environment variables are correctly configured."
+          },
+          {
+            "id": 3,
+            "title": "Set Up Domain and SSL",
+            "description": "Configure the default Railway domain and a custom domain with SSL certificates.",
+            "dependencies": [
+              1
+            ],
+            "details": "Set up DNS settings for the custom domain and apply SSL certificates to ensure secure connections.",
+            "status": "pending",
+            "testStrategy": "Access the application via the custom domain to validate DNS and SSL configurations."
+          },
+          {
+            "id": 4,
+            "title": "Establish CI/CD Pipeline",
+            "description": "Create a CI/CD pipeline for automated deployments using Railway's features.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Use Railway's deployment features to automate the deployment process from the main branch.",
+            "status": "pending",
+            "testStrategy": "Ensure seamless updates by testing the pipeline with a new commit to the main branch."
+          },
+          {
+            "id": 5,
+            "title": "Verify Database Connection",
+            "description": "Check the connection to the Railway PostgreSQL database.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Ensure the connection string and environment variables are correctly set up and tested for database access.",
+            "status": "pending",
+            "testStrategy": "Test database operations to confirm successful connection and data retrieval."
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-07-19T03:34:03.422Z",
-      "updated": "2025-07-19T03:34:20.118Z",
+      "updated": "2025-07-19T04:03:31.667Z",
       "description": "Tasks for master context"
     }
   }
