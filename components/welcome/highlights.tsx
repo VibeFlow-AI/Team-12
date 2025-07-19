@@ -44,7 +44,10 @@ export default function SessionHighlights() {
   };
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 relative overflow-hidden">
+    <section
+      className="py-8 sm:py-12 lg:py-16 relative overflow-hidden"
+      id="session-highlights"
+    >
       {/* Gradient Background Circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-48 w-96 h-96 bg-gradient-radial from-green-300/40 to-transparent rounded-full blur-3xl"></div>
@@ -55,7 +58,7 @@ export default function SessionHighlights() {
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-medium text-gray-900 mb-4 sm:mb-6">
             Session Highlights – Trending Now
           </h2>
           <p className="text-sm sm:text-base lg:text-lg text-gray-700 leading-relaxed">
