@@ -4,7 +4,7 @@ export default function StudentBenefits() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">What's in it for Students?</h2>
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">What&apos;s in it for Students?</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             EduVibe is a student-mentor platform designed to personalize learning journeys. It connects students with mentors who offer guidance, support, and practical industry insights.
           </p>
@@ -24,7 +24,7 @@ export default function StudentBenefits() {
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">Personalized Learning</h3>
             <p className="text-gray-600 text-sm leading-relaxed">
-              We tailor the mentorship experience to fit each student's unique goals, learning style, and pace making every session impactful.
+              We tailor the mentorship experience to fit each student&apos;s unique goals, learning style, and pace making every session impactful.
             </p>
           </div>
 
