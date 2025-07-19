@@ -1,0 +1,47 @@
+# === Node.js Dependencies ===
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.pnpm-debug.log*
+
+# === Build Output ===
+.next/
+out/
+build/
+
+# === Prisma Generated Files ===
+prisma/dev.db
+prisma/migrations/
+/lib/generated/prisma/
+*.sqlite
+
+# === TypeScript ===
+*.tsbuildinfo
+next-env.d.ts
+
+# === Environment Variables ===
+.env
+.env.local*
+.env.*  # Include .env.local, .env.production, etc.
+
+# === OS / IDE Specific ===
+.DS_Store
+*.pem
+*.log
+*.swp
+
+# === Vercel ===
+.vercel
+
+# === Testing ===
+coverage/
+
+# === Yarn PnP ===
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
