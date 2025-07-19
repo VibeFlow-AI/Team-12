@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { getDatabase } from "@/lib/mongodb-alt";
+import { getFallbackDatabase } from "@/lib/mongodb-fallback";
+import { emailService } from "@/app/email/service";
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +15,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const db = await getDatabase();
+    // Get database connection with fallback logic
+    let db;
+    try {
+      db = await getDatabase();
+    } catch (dbError) {
+      console.error("Primary database connection failed, trying fallback...", dbError);
+      try {
+        db = await getFallbackDatabase();
+      } catch (fallbackError) {
+        console.error("Fallback database connection also failed:", fallbackError);
+        return NextResponse.json(
+          { error: "Database connection failed. Please try again later." },
+          { status: 503 }
+        );
+      }
+    }
     
     // Check if user already exists
     const existingUser = await db.collection("users").findOne({ email });
@@ -35,6 +52,11 @@ export async function POST(request: Request) {
       role,
       createdAt: new Date(),
       updatedAt: new Date(),
+    });
+
+    // Send welcome email (don't block response if email fails)
+    emailService.sendWelcomeEmail({ name, email, role }).catch(error => {
+      console.error('Failed to send welcome email:', error);
     });
 
     return NextResponse.json({

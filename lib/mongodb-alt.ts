@@ -13,6 +13,7 @@ const options = {
   maxPoolSize: 10,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
+  // No SSL/TLS options - using default connection
 };
 
 if (process.env.NODE_ENV === "development") {
@@ -22,12 +23,18 @@ if (process.env.NODE_ENV === "development") {
 
   if (!globalWithMongo._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
+    globalWithMongo._mongoClientPromise = client.connect().catch((error) => {
+      console.error("MongoDB connection error (alt-development):", error.message);
+      return Promise.reject(error);
+    });
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
   client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+  clientPromise = client.connect().catch((error) => {
+    console.error("MongoDB connection error (alt-production):", error.message);
+    return Promise.reject(error);
+  });
 }
 
 export async function getDatabase(): Promise<Db> {

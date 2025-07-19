@@ -1,0 +1,444 @@
+EduVibe is an AI-powered educational platform that connects students with qualified mentors for personalized learning experiences. The platform solves the critical problem of students like Maya Chen (preparing for Biology A/L practical exams) struggling to find appropriate academic guidance, while qualified educators like Dr. Aisha Patel lack modern, flexible platforms to effectively help students.
+Problem: Traditional educational platforms are rigid, outdated, and poorly structured for dynamic learning needs. Students cannot find specialized guidance for their academic challenges, while qualified mentors have no accessible way to reach students who need their expertise.
+Target Users:
+
+Primary: Students (Grades 9-12, O/L, A/L) seeking academic support
+Secondary: Qualified mentors, teachers, and subject experts wanting to provide tutoring services
+
+Value: EduVibe leverages AI to create meaningful educational connections through smart matching, intuitive user experiences, and data-driven insights that benefit both students and mentors. The platform eliminates the friction in finding quality academic support while providing mentors with modern tools to manage their tutoring practice effectively.
+Core Features
+1. Multi-Part Onboarding System
+What it does: Progressive 3-step form-based registration that captures detailed user profiles for students and mentors with complete state persistence across sessions.
+Why it's important: Enables accurate mentor-student matching by collecting comprehensive information about academic needs, teaching capabilities, and preferences without overwhelming users with complex forms.
+How it works: Students complete personal info → academic background → subject assessment. Mentors complete personal info → expertise areas → social links. All form states persist across page refreshes, navigation, and browser sessions.
+2. AI-Powered Mentor Recommendation Engine
+What it does: Intelligent algorithm that matches students with suitable mentors based on subjects, skill levels, language preferences, student grades, and mentor experience using a sophisticated scoring system.
+Why it's important: Ensures students find the most relevant help quickly, improving learning outcomes and reducing time spent searching through irrelevant options while maximizing mentor utilization.
+How it works: Multi-factor scoring system considers subject overlap, experience level compatibility, language matching, and student grade alignment to rank mentors. Top matches appear first in discovery feed with additional filtering and search capabilities.
+3. Interactive Session Booking System
+What it does: Complete end-to-end booking flow allowing students to discover mentors, select available date/time slots, and confirm sessions through payment slip upload with real-time availability checking.
+Why it's important: Streamlines the entire process from mentor discovery to confirmed session, removing friction that could prevent students from accessing help while ensuring mentors can manage their availability effectively.
+How it works: Modal-based flow: mentor selection → date/time picker → bank slip upload → booking confirmation. Fixed 2-hour session duration with conflict detection and automated status updates.
+4. Student Dashboard & Management
+What it does: Centralized hub with "Explore" tab showing available mentors with advanced filtering options and "Booked Sessions" tab displaying current and historical sessions with detailed information.
+Why it's important: Provides students with complete control over their learning journey and easy access to session management tools while maintaining a clear overview of their academic support activities.
+How it works: Tabbed interface with mentor discovery, multi-parameter filtering (subject, duration, experience, language), session tracking, mentor contact information, and session status monitoring.
+5. Mentor Dashboard with Analytics
+What it does: Comprehensive dashboard showing session management, visual student analytics (age demographics pie charts, subject interest bar charts), and chronologically organized booking queue with detailed student profiles.
+Why it's important: Helps mentors understand their student base demographics, optimize teaching approaches based on data insights, and efficiently manage their tutoring business operations.
+How it works: Interactive data visualizations using charts for student analytics, chronological session management interface, detailed student profile access, and session initiation tools with communication features.
+6. Responsive Homepage Experience
+What it does: Engaging landing page with hero section, animated carousel highlighting platform benefits, mentor session showcase, and professional animations matching high-fidelity Figma prototypes.
+Why it's important: Creates strong first impression that converts visitors to registered users through clear value proposition, professional design, and immediate demonstration of platform capabilities.
+How it works: Hero section with platform description and student imagery, sliding carousel showcasing AI-powered features, mock mentor session cards demonstrating available services, and prominent "Get Started" button triggering registration flow.
+User Experience
+User Personas
+Maya Chen (Primary Student Persona)
+
+Demographics: 16-18 years old, preparing for Advanced Level Biology exams
+Goals: Pass practical exams, improve conceptual understanding in Genetics and Human Physiology
+Pain Points: Cannot find specialized guidance, existing platforms are confusing and outdated
+Behavior: Prefers intuitive mobile-friendly interfaces, needs quick access to relevant mentors
+Technical Comfort: Moderate, expects responsive design and clear navigation
+
+Dr. Aisha Patel (Primary Mentor Persona)
+
+Demographics: 35+ years old, university lecturer with 10+ years teaching experience
+Goals: Help students succeed academically, monetize expertise, maintain flexible teaching schedule
+Pain Points: Existing platforms are rigid and poorly designed for dynamic learning needs
+Behavior: Values efficiency and comprehensive student management tools, expects professional features
+Technical Comfort: High, wants robust analytics and streamlined session management
+
+Key User Flows
+Student Registration & Discovery Flow:
+
+Homepage visit → Click "Get Started" → Sign-up modal opens
+Select "Register as Student" → Complete 3-part onboarding form
+Access student dashboard → Navigate to "Explore" tab
+Browse recommended mentors → Apply filters (subject, experience, language)
+Select mentor → View detailed profile → Initiate booking process
+
+Session Booking Flow:
+
+Choose mentor from discovery interface → Click "Book Session"
+Date/time selection modal → Choose available slot
+Payment confirmation modal → Upload bank slip
+Booking confirmation → Redirect to "Booked Sessions" tab
+Session management → View details, contact mentor, track status
+
+Mentor Registration & Management Flow:
+
+Homepage → "Get Started" → Select "Register as Mentor"
+Complete 3-part onboarding with expertise details
+Access mentor dashboard → View student analytics
+Manage booked sessions → Review student profiles
+Track session history → Analyze student demographics and subject trends
+
+UI/UX Considerations
+
+Mobile-First Responsive Design: Seamless experience across all device sizes with touch-optimized interfaces
+Progressive Disclosure: Complex processes broken into digestible steps with clear progress indicators
+State Persistence: Form data, navigation states, and user preferences retained across all sessions
+Visual Hierarchy: Clear information architecture with consistent design patterns and intuitive navigation
+Accessibility: WCAG 2.1 AA compliance with proper contrast ratios, semantic markup, and keyboard navigation
+Animation & Micro-interactions: Smooth transitions and engaging interactions matching Figma prototypes
+Error Handling: Clear, actionable error messages with graceful failure states and recovery options
+
+Technical Architecture
+System Components
+Frontend Architecture:
+
+Framework: React.js with modern hooks, functional components, and TypeScript
+State Management: Redux Toolkit for complex application state, React Context for simpler component state
+Routing: React Router with protected routes and role-based authentication guards
+Styling: Tailwind CSS with custom component library precisely matching Figma designs
+Forms: React Hook Form with Zod validation schemas for robust form handling
+Charts: Chart.js for mentor dashboard analytics and data visualization
+Animation: Framer Motion for page transitions, micro-interactions, and complex animations
+
+Backend Architecture:
+
+API Framework: Node.js with Express.js providing RESTful API endpoints
+Authentication: JWT-based authentication with role-based access control (RBAC)
+Database: PostgreSQL with properly normalized relational schema design
+File Storage: Cloudinary for optimized image storage and payment slip management
+Caching: Redis for session management and frequently accessed mentor data
+
+Data Models
+Core Database Schema:
+sqlUsers {
+  id: UUID PRIMARY KEY
+  email: VARCHAR(255) UNIQUE NOT NULL
+  password_hash: VARCHAR(255) NOT NULL
+  role: ENUM('student', 'mentor') NOT NULL
+  created_at: TIMESTAMP DEFAULT NOW()
+  last_login: TIMESTAMP
+}
+
+StudentProfiles {
+  user_id: UUID REFERENCES Users(id)
+  full_name: VARCHAR(255) NOT NULL
+  age: INTEGER NOT NULL
+  contact_number: VARCHAR(20)
+  education_level: ENUM('grade_9', 'ordinary_level', 'advanced_level')
+  school: VARCHAR(255)
+  subjects_of_interest: TEXT[]
+  current_year: INTEGER
+  skill_levels: JSONB
+  learning_style: ENUM('visual', 'hands_on', 'theoretical', 'mixed')
+  learning_disabilities: TEXT
+}
+
+MentorProfiles {
+  user_id: UUID REFERENCES Users(id)
+  full_name: VARCHAR(255) NOT NULL
+  age: INTEGER NOT NULL
+  contact_number: VARCHAR(20)
+  preferred_language: ENUM('english', 'sinhala', 'tamil', 'other')
+  location: VARCHAR(255)
+  bio: TEXT NOT NULL
+  professional_role: VARCHAR(255)
+  subjects: TEXT[] NOT NULL
+  teaching_experience: ENUM('none', '1_3_years', '3_5_years', '5_plus_years')
+  preferred_student_levels: TEXT[]
+  linkedin_profile: VARCHAR(500) NOT NULL
+  portfolio_url: VARCHAR(500)
+  profile_picture_url: VARCHAR(500)
+}
+
+Sessions {
+  id: UUID PRIMARY KEY
+  student_id: UUID REFERENCES Users(id)
+  mentor_id: UUID REFERENCES Users(id)
+  scheduled_date: TIMESTAMP NOT NULL
+  duration_hours: INTEGER DEFAULT 2
+  status: ENUM('pending', 'confirmed', 'completed', 'cancelled')
+  payment_slip_url: VARCHAR(500)
+  created_at: TIMESTAMP DEFAULT NOW()
+}
+APIs and Integrations
+Core API Endpoints:
+
+POST /auth/register - User registration with role selection and validation
+POST /auth/login - User authentication with JWT token generation
+POST /onboarding/student - Student profile creation with skill assessment
+POST /onboarding/mentor - Mentor profile creation with expertise validation
+GET /mentors - Mentor discovery with filtering, search, and pagination
+GET /mentors/recommendations - AI-powered personalized mentor suggestions
+POST /sessions - Session booking creation with availability validation
+GET /dashboard/student - Student dashboard data with booked sessions
+GET /dashboard/mentor - Mentor dashboard with analytics and session management
+POST /upload/payment-slip - Secure payment confirmation file upload
+
+Third-Party Integrations:
+
+Cloudinary: Image optimization, storage, and delivery for profile pictures and payment slips
+SendGrid: Transactional email service for booking confirmations and platform notifications
+Chart.js: Client-side data visualization for mentor dashboard analytics
+
+Infrastructure Requirements
+Development Environment:
+
+Docker containerization for consistent development environment across team members
+Hot module reloading for rapid development iteration and testing
+Environment variable management for secure API key and database connection handling
+Local PostgreSQL and Redis instances for complete offline development capability
+
+Production Deployment:
+
+Frontend: Vercel deployment with global CDN for optimal performance
+Backend: Railway or Heroku for scalable API hosting with automatic deployments
+Database: PostgreSQL on managed cloud service (AWS RDS or Railway Database)
+File Storage: Cloudinary with global CDN for optimized file delivery
+Monitoring: Comprehensive error tracking and performance monitoring integration
+
+Development Roadmap
+Phase 1: Foundation & Authentication (MVP Core)
+Scope: Establish complete user authentication system and basic platform structure enabling users to register and access role-appropriate interfaces.
+Detailed Features:
+
+Basic homepage with navigation, hero section, and "Get Started" button
+Complete authentication system with secure registration and login
+Role selection interface ("Register as Student" vs "Register as Mentor")
+Student 3-part onboarding form with full state persistence and validation
+Mentor 3-part onboarding form with file upload capability for profile pictures
+Basic student dashboard layout with navigation tabs (Explore, Booked Sessions)
+Basic mentor dashboard layout with session management interface
+Database schema implementation with all core tables and relationships
+JWT authentication middleware with role-based access control
+Mock data generation system creating minimum 12 diverse mentor profiles
+
+Technical Deliverables:
+
+PostgreSQL database with complete schema and proper indexing
+Express.js API with authentication endpoints and middleware
+React frontend with routing, form handling, and basic responsive design
+Form validation system with error handling and user feedback
+File upload system for profile pictures with cloud storage integration
+
+Phase 2: Mentor Discovery & Recommendation System
+Scope: Implement intelligent mentor discovery with sophisticated matching algorithm and comprehensive search capabilities.
+Detailed Features:
+
+Complete mentor discovery interface in student dashboard "Explore" tab
+Advanced search and filtering system (subjects, experience, language, student levels, availability)
+AI-powered recommendation algorithm with multi-factor scoring system
+Mentor profile detail views with comprehensive information display
+Sorting options (relevance, experience, rating, availability) with pagination
+Enhanced mentor cards showing key information (subjects, experience, ratings, availability)
+Search functionality with autocomplete for subjects and mentor names
+Filter persistence and URL state management for shareable search results
+
+Technical Deliverables:
+
+Sophisticated recommendation algorithm considering multiple matching factors
+Optimized database queries with proper indexing for search and filtering
+Caching system for frequently accessed mentor data and search results
+API endpoints for mentor discovery with pagination and advanced filtering
+Search performance optimization with response time under 500ms
+
+Phase 3: Complete Session Booking & Management
+Scope: Implement end-to-end session booking flow with payment confirmation and comprehensive session management for both user types.
+Detailed Features:
+
+Interactive booking modal with intuitive date/time selection interface
+Real-time availability checking with conflict detection and prevention
+Payment confirmation flow with secure bank slip upload and validation
+Session status tracking with automatic updates and notifications
+Complete "Booked Sessions" tab in student dashboard with session details
+Mentor session management interface with chronological session organization
+Booking confirmation system with email notifications to both parties
+Session cancellation and rescheduling capabilities with proper status management
+Communication features enabling students and mentors to contact each other
+
+Technical Deliverables:
+
+Complete booking system API with comprehensive validation and conflict detection
+Secure file upload system for payment confirmations with validation and storage
+Session state management with automatic status updates and notifications
+Email notification system integration with customizable templates
+Real-time availability management preventing double-booking conflicts
+
+Phase 4: Advanced Analytics & Dashboard Enhancement
+Scope: Implement comprehensive analytics for mentor dashboard and enhance user experience with detailed insights and improved functionality.
+Detailed Features:
+
+Mentor analytics dashboard with interactive pie charts showing student age demographics
+Horizontal bar charts displaying student subject interest breakdowns and trends
+Enhanced session management with detailed student profiles and contact information
+Advanced filtering and sorting capabilities in all dashboard views
+Session history tracking with performance metrics and student feedback
+Student progress tracking and mentor effectiveness analytics
+Dashboard customization options for mentors to prioritize important information
+Export capabilities for mentor analytics and session reports
+
+Technical Deliverables:
+
+Data aggregation and analytics API endpoints with optimized queries
+Chart.js integration for interactive and responsive data visualization
+Advanced dashboard state management with real-time updates
+Performance optimization for data-heavy analytics views
+Caching strategies for analytics data to improve dashboard load times
+
+Phase 5: UI Polish & Advanced Homepage Features
+Scope: Complete homepage implementation matching Figma designs and add advanced UI features throughout the platform.
+Detailed Features:
+
+Complete homepage implementation with animated carousel sections
+Session highlights section featuring mock mentor session cards with realistic data
+Advanced animations and micro-interactions throughout platform matching prototypes
+Comprehensive mobile responsiveness optimization and cross-device testing
+Loading states, skeleton screens, and enhanced error handling throughout application
+Advanced form validation with helpful user guidance and real-time feedback
+Accessibility improvements including keyboard navigation and screen reader support
+Performance optimization with code splitting, lazy loading, and bundle optimization
+
+Technical Deliverables:
+
+Framer Motion animation system implementation with custom transitions
+Complete responsive design system across all components and breakpoints
+Performance optimization achieving sub-3-second load times
+Comprehensive error boundary implementation with graceful failure recovery
+Accessibility compliance meeting WCAG 2.1 AA standards
+
+Phase 6: Production Readiness & Advanced Features
+Scope: Prepare platform for production deployment with enhanced AI capabilities, security hardening, and comprehensive monitoring.
+Detailed Features:
+
+Enhanced matching algorithm with machine learning capabilities for improved recommendations
+Intelligent form assistance with AI-powered validation and user guidance
+Advanced recommendation engine with learning capabilities based on user interactions
+Comprehensive security audit and penetration testing with vulnerability remediation
+Production deployment configuration with monitoring, logging, and alerting systems
+Performance analytics dashboard for platform administrators
+Advanced caching strategies and database optimization for scalability
+Comprehensive testing suite including unit, integration, and end-to-end tests
+
+Technical Deliverables:
+
+ML/AI integration for continuously improving matching algorithms
+Production deployment pipeline with automated testing and deployment
+Comprehensive monitoring and analytics integration with alerting systems
+Security hardening including rate limiting, input sanitization, and access controls
+Performance optimization achieving production-level scalability requirements
+
+Logical Dependency Chain
+Foundation Dependencies (Critical Path)
+
+Database Schema & Models - All features require proper data structure and relationships
+Authentication System - Essential before implementing any user-specific functionality
+Basic Routing & Navigation - Required foundation for multi-page application architecture
+Form Infrastructure & Validation - Core requirement for all user input, onboarding, and booking flows
+
+Quick Visible Progress Strategy
+
+Static Homepage Implementation - Provides immediate visual progress and validates design implementation approach
+Registration Modal & Authentication Flow - First interactive feature users can complete, test, and provide feedback on
+Basic Dashboard Layouts - Demonstrates role-based access control and provides framework for all future features
+Mock Data Population - Shows realistic platform content immediately, enabling rapid user testing and stakeholder feedback
+
+Atomic Feature Development Sequence
+
+Complete User Onboarding Before Mentor Discovery - Must have comprehensive user profiles before matching algorithm can generate meaningful recommendations
+Mentor Profile Creation Before Recommendation Engine - Algorithm requires substantial mentor data to produce accurate and diverse recommendations
+Basic Mentor Discovery Before Booking System - Users must be able to find and evaluate mentors before booking functionality becomes useful
+Session Creation Before Analytics Dashboard - Need actual session data before building meaningful analytics and insights for mentors
+Core Functionality Before UI Polish - Ensure all primary features work reliably before investing in animations, micro-interactions, and visual enhancements
+
+Iterative Enhancement Approach
+
+Each development phase delivers independently testable and demonstrable functionality
+Features designed for incremental improvement without breaking existing capabilities
+MVP from Phase 1 provides foundation that can be continuously enhanced throughout development
+Each feature includes comprehensive error handling, edge case management, and user feedback systems
+Architecture supports user feedback incorporation at any development stage without major refactoring
+Modular design enables parallel development of independent features once foundation is established
+
+Risks and Mitigations
+Technical Challenges
+Risk: Complex state management across multiple user flows causing inconsistent application state and user experience bugs
+Mitigation: Implement Redux Toolkit with clearly defined action/reducer patterns, create comprehensive state management documentation with examples, establish thorough automated testing procedures for all state transitions and edge cases, and design atomic state updates with proper error handling.
+Risk: AI pair programming generating inconsistent or unmaintainable code that becomes technical debt
+Mitigation: Establish detailed coding standards with reusable prompt templates for common tasks, implement mandatory code review processes for all AI-generated code, focus on modular architecture with comprehensive inline documentation, and create AI prompt guidelines that emphasize code quality and maintainability.
+Risk: Mentor recommendation algorithm failing to produce accurate matches leading to poor user satisfaction
+Mitigation: Begin with simple scoring algorithm using weighted factors, implement A/B testing framework to measure matching effectiveness, design algorithm architecture to be easily replaceable and extensively testable, establish metrics tracking for match success rates and user feedback integration.
+Risk: File upload system creating security vulnerabilities or performance bottlenecks affecting platform reliability
+Mitigation: Use established cloud services (Cloudinary) with built-in security features, implement strict file type and size validation, add automated malware scanning, establish clear file retention and deletion policies, and design scalable file processing with queue management.
+MVP Definition and Scope Management
+Risk: Feature creep preventing completion of core functionality within available development time
+Mitigation: Strictly enforce phase-by-phase development with clear completion criteria, define specific "Definition of Done" requirements for each development phase, prioritize working end-to-end user flows over feature completeness, and establish regular stakeholder reviews to maintain scope discipline.
+Risk: UI implementation not accurately matching Figma high-fidelity designs affecting evaluation criteria
+Mitigation: Break down Figma designs into specific component-level implementation requirements, leverage AI assistance specifically for CSS/styling challenges with design precision, implement responsive design patterns incrementally with regular design review checkpoints, and establish pixel-perfect design validation processes.
+Risk: Onboarding form complexity causing user abandonment and poor conversion rates
+Mitigation: Implement robust state persistence across all user interactions and browser sessions, create clear progress indicators with motivational messaging, design forms for progressive disclosure with optional advanced features, conduct regular user testing with real target users, and establish abandonment tracking with optimization.
+Resource Constraints and Development Efficiency
+Risk: Limited development time affecting overall code quality and feature robustness
+Mitigation: Prioritize core user flows over advanced features in early phases, leverage proven libraries and frameworks to accelerate development velocity, focus AI experimentation on high-impact complex logic rather than simple boilerplate code, and establish clear technical debt management procedures.
+Risk: AI token usage inefficiency leading to increased development costs or rate limiting constraints
+Mitigation: Develop and continuously optimize prompt design for maximum token efficiency, implement intelligent response caching where appropriate, use AI strategically for complex algorithm and logic generation rather than simple code, establish comprehensive token usage monitoring and optimization procedures.
+Risk: Database performance degradation as user base and session data grows beyond initial planning
+Mitigation: Design database schema with proper indexing and query optimization from project start, implement comprehensive caching strategies for frequently accessed data, plan for horizontal scaling with cloud database solutions, establish proactive performance monitoring with automated alerting systems.
+Appendix
+Research Findings
+User Experience Analysis:
+
+Students demonstrate strong preference for visual, intuitive interfaces over feature-heavy platforms that require extensive learning curves
+Mobile responsiveness is absolutely critical for student engagement, with over 70% of target demographic accessing educational platforms primarily through mobile devices
+Form completion rates increase significantly with clear progress indicators and state persistence across sessions
+Students abandon registration processes when forms exceed 3 steps or require excessive information upfront
+
+Mentor Requirements Study:
+
+Mentors prioritize comprehensive student analytics and efficient session management capabilities above all other platform features
+The ability to understand student demographics, learning patterns, and subject interests significantly improves mentor satisfaction and platform retention
+Mentors strongly value automated administrative features that reduce manual session management overhead
+Professional mentors expect robust booking systems with conflict prevention and clear communication channels
+
+AI-Assisted Development Insights:
+
+Prompt engineering for UI component implementation shows 60-80% acceleration in development speed when properly structured with specific requirements
+AI assistance proves most effective for component-level implementation rather than architectural decision-making or complex business logic
+Iterative prompt refinement with specific examples and constraints produces significantly better code quality than generic requests
+AI-generated code requires systematic review processes to maintain consistency and prevent technical debt accumulation
+
+Competitive Platform Analysis:
+
+Existing educational platforms suffer from poor user experience design, outdated interfaces, and lack of intelligent matching capabilities
+Current market solutions provide minimal analytics for mentors and limited personalization for students
+Significant opportunity exists for well-designed, AI-powered alternatives that prioritize user experience and intelligent matching
+Most competitors lack mobile-optimized experiences, creating clear differentiation opportunity
+
+Technical Specifications
+Performance Requirements:
+
+Initial page load time: <3 seconds on 3G networks with proper loading states
+Page transitions: <1 second for all navigation with smooth animations
+Database query response: <500ms for standard operations including complex searches
+File upload processing: <10 seconds for payment slip uploads with progress indicators
+Concurrent user capacity: 1000+ simultaneous users with proper load balancing
+
+Browser and Device Compatibility:
+
+Modern browsers: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+ with full feature support
+Mobile devices: iOS 13+, Android 8+ with native-like touch interfaces
+Responsive design: 320px to 2560px screen widths with optimized layouts
+Touch-friendly interfaces: 44px minimum tap targets with proper spacing
+Progressive Web App capabilities: Offline functionality and installable interface
+
+Security and Compliance Standards:
+
+JWT token management: 24-hour expiration with secure refresh token rotation
+Password security: Minimum 8 characters with complexity validation and hashing
+Data encryption: Industry-standard encryption at rest and in transit
+File upload security: Comprehensive type checking, size limits, and malware scanning
+Privacy compliance: GDPR-compliant user data export and deletion capabilities
+API security: Rate limiting, input sanitization, and comprehensive access controls
+
+Accessibility and Usability Standards:
+
+WCAG 2.1 AA compliance: Full accessibility for users with disabilities
+Keyboard navigation: Complete functionality accessible without mouse interaction
+Screen reader compatibility: Proper ARIA labels and semantic markup throughout
+Color contrast ratios: Meeting or exceeding accessibility guidelines for visual clarity
+Alternative content: Descriptive text for all images, charts, and visual elements
+Multi-language support: Framework for future localization and translation capabilities
