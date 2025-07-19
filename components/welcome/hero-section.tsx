@@ -15,7 +15,6 @@ const profileImages = [
   "/hero/5.png",
   "/hero/6.png",
   "/hero/7.png",
-  "/hero/8.png",
 ];
 
 export default function HeroSection({ onGetStarted }: HeroSectionProps) {

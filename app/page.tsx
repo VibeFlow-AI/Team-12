@@ -7,6 +7,7 @@ import Navigation from "@/components/welcome/navigation";
 import HeroSection from "@/components/welcome/hero-section";
 import StudentBenefits from "@/components/welcome/student-benefits";
 import SessionHighlights from "@/components/welcome/session-highlights";
+import AnimatedCardsSection from "@/components/welcome/animated-cards";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function WelcomePage() {
     <div className="font-sans antialiased">
       <Navigation onGetStarted={handleGetStarted} isAuthenticated={!!session} />
       <HeroSection onGetStarted={handleGetStarted} />
-      <StudentBenefits />
+      <AnimatedCardsSection />
       <SessionHighlights />
     </div>
   );
