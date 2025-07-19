@@ -51,5 +51,19 @@ export async function getDb(): Promise<Db | null> {
     return null;
   }
 }
+export async function getDb2(): Promise<Db | null> {
+  if (!clientPromise) {
+    console.warn("MongoDB not configured. Returning null.");
+    return null;
+  }
+  
+  try {
+    const client = await clientPromise;
+    return client.db("team_12");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    return null;
+  }
+}
 
 export default clientPromise;
