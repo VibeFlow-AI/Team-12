@@ -6,17 +6,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  Search,
-  LayoutDashboard,
+  Home,
   Calendar,
-  BookmarkIcon,
   MessageSquare,
   Settings,
   User,
   HelpCircle,
-  LogOut,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Edit3,
+  Bell,
+  DollarSign,
+  BarChart3
 } from "lucide-react";
 
 interface SidebarProps {
@@ -25,44 +26,51 @@ interface SidebarProps {
 
 const navigationItems = [
   {
-    name: "Discover",
-    href: "/dashboard/discover",
-    icon: Search,
-    description: "Find mentors"
-  },
-  {
     name: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    description: "Overview"
+    href: "/mentor/dashboard",
+    icon: Home,
+    description: "Overview",
+    badge: 3
   },
   {
     name: "Sessions",
-    href: "/dashboard/sessions",
-    icon: Calendar,
-    description: "Booked sessions"
+    href: "/mentor/sessions",
+    icon: Edit3,
+    description: "Manage sessions"
   },
   {
-    name: "Bookmarks",
-    href: "/dashboard/bookmarks",
-    icon: BookmarkIcon,
-    description: "Saved mentors"
+    name: "Calendar",
+    href: "/mentor/calendar",
+    icon: Calendar,
+    description: "Schedule"
+  },
+  {
+    name: "Earnings",
+    href: "/mentor/earnings",
+    icon: DollarSign,
+    description: "Payment history"
+  },
+  {
+    name: "Analytics",
+    href: "/mentor/analytics",
+    icon: BarChart3,
+    description: "Performance"
   },
   {
     name: "Messages",
-    href: "/dashboard/messages",
+    href: "/mentor/messages",
     icon: MessageSquare,
-    description: "Chat with mentors"
+    description: "Student chats"
   },
   {
     name: "Profile",
-    href: "/dashboard/profile",
+    href: "/mentor/profile",
     icon: User,
     description: "Your profile"
   },
   {
     name: "Settings",
-    href: "/dashboard/settings",
+    href: "/mentor/settings",
     icon: Settings,
     description: "Preferences"
   }
@@ -71,13 +79,13 @@ const navigationItems = [
 const bottomItems = [
   {
     name: "Help",
-    href: "/dashboard/help",
+    href: "/mentor/help",
     icon: HelpCircle,
     description: "Support"
   }
 ];
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function MentorSidebar({ className }: SidebarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -92,7 +100,6 @@ export default function Sidebar({ className }: SidebarProps) {
   };
 
   const isActive = (href: string) => {
-    if (href === "/dashboard/discover" && pathname === "/samples") return true;
     return pathname === href || pathname.startsWith(href + "/");
   };
 
@@ -117,7 +124,7 @@ export default function Sidebar({ className }: SidebarProps) {
             isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"
           )}>
             <h2 className="font-bold text-neutral-900 text-lg whitespace-nowrap">EduVibe</h2>
-            <p className="text-neutral-500 text-xs whitespace-nowrap">Student Dashboard</p>
+            <p className="text-neutral-500 text-xs whitespace-nowrap">Mentor Dashboard</p>
           </div>
         </div>
       </div>
@@ -131,7 +138,7 @@ export default function Sidebar({ className }: SidebarProps) {
           return (
             <Link
               key={item.name}
-              href={item.href === "/dashboard/discover" ? "/samples" : item.href}
+              href={item.href}
               className={cn(
                 "flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 group relative",
                 "hover:bg-neutral-50 hover:translate-x-1",
@@ -139,12 +146,19 @@ export default function Sidebar({ className }: SidebarProps) {
                 active && "before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-black before:rounded-r-full"
               )}
             >
-              <Icon 
-                className={cn(
-                  "w-5 h-5 flex-shrink-0 transition-colors duration-200",
-                  active ? "text-black" : "text-neutral-500 group-hover:text-neutral-700"
+              <div className="relative">
+                <Icon 
+                  className={cn(
+                    "w-5 h-5 flex-shrink-0 transition-colors duration-200",
+                    active ? "text-black" : "text-neutral-500 group-hover:text-neutral-700"
+                  )}
+                />
+                {item.badge && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                    {item.badge}
+                  </span>
                 )}
-              />
+              </div>
               <div className={cn(
                 "ml-3 transition-all duration-300",
                 isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"
@@ -217,9 +231,9 @@ export default function Sidebar({ className }: SidebarProps) {
         {/* User Profile */}
         <div className="pt-2 mt-2 border-t border-neutral-100">
           <div className="flex items-center px-3 py-2.5 rounded-xl hover:bg-neutral-50 transition-all duration-200 group cursor-pointer">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
               <span className="text-white font-bold text-xs">
-                {session?.user?.name ? getInitials(session.user.name) : "U"}
+                {session?.user?.name ? getInitials(session.user.name) : "M"}
               </span>
             </div>
             <div className={cn(
@@ -227,16 +241,16 @@ export default function Sidebar({ className }: SidebarProps) {
               isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"
             )}>
               <span className="font-medium text-sm text-neutral-700 whitespace-nowrap block">
-                {session?.user?.name || "User"}
+                {session?.user?.name || "Mentor"}
               </span>
               <span className="text-neutral-500 text-xs whitespace-nowrap block capitalize">
-                {session?.user?.role || "Student"}
+                Mentor Account
               </span>
             </div>
 
             {!isExpanded && (
               <div className="absolute left-full ml-2 px-2 py-1 bg-black text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                {session?.user?.name || "User Profile"}
+                {session?.user?.name || "Mentor Profile"}
               </div>
             )}
           </div>

@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
-import Sidebar from "@/components/dashboard/sidebar";
-import StudentNavbar from "@/components/dashboard/student-navbar";
+import MentorSidebar from "@/components/dashboard/mentor-sidebar";
+import MentorNavbar from "@/components/dashboard/mentor-navbar";
 
-export default async function DashboardLayout({
+export default async function MentorLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -15,21 +15,21 @@ export default async function DashboardLayout({
     redirect("/auth/signin");
   }
 
-  // Check if onboarding is completed
-  if (!session.user.onboardingCompleted) {
-    redirect(`/onboarding/${session.user.role}`);
+  // Check if user is a mentor
+  if (session.user.role !== "mentor") {
+    redirect("/dashboard");
   }
 
-  // Redirect mentors to their dashboard
-  if (session.user.role === "mentor") {
-    redirect("/mentor/dashboard");
+  // Check if onboarding is completed
+  if (!session.user.onboardingCompleted) {
+    redirect(`/onboarding/mentor`);
   }
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <StudentNavbar />
+      <MentorNavbar />
       <div className="flex">
-        <Sidebar />
+        <MentorSidebar />
         <main className="flex-1">
           {children}
         </main>
