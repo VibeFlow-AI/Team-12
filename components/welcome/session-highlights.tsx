@@ -58,22 +58,6 @@ const mentors: Mentor[] = [
 export default function SessionHighlights() {
   return (
     <section className="py-20 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      <style jsx>{`
-        .session-card {
-          background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,247,244,0.8) 100%);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .card-hover {
-          transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-      `}</style>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -89,7 +73,7 @@ export default function SessionHighlights() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {mentors.map((mentor, index) => (
-            <div key={index} className="session-card rounded-2xl p-6 shadow-lg card-hover">
+            <div key={index} className="session-card rounded-2xl p-6 shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl">
               <div className="flex items-center mb-4">
                 <div
                   className={`w-12 h-12 ${mentor.color} rounded-full flex items-center justify-center mr-4`}

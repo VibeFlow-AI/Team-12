@@ -1,16 +1,6 @@
 export default function StudentBenefits() {
   return (
     <section className="py-20 bg-gradient-to-b from-cream to-white">
-      <style jsx>{`
-        .card-hover {
-          transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-      `}</style>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
@@ -22,7 +12,7 @@ export default function StudentBenefits() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Personalized Learning */}
-          <div className="card-hover bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl">
             <div className="mb-6">
               <div className="w-full h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl mb-4 flex items-center justify-center">
                 <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center">
@@ -39,7 +29,7 @@ export default function StudentBenefits() {
           </div>
 
           {/* Real Mentors, Real Guidance */}
-          <div className="card-hover bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl">
             <div className="mb-6">
               <div className="w-full h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-xl mb-4 flex items-center justify-center">
                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center">
@@ -53,7 +43,7 @@ export default function StudentBenefits() {
           </div>
 
           {/* Growth & Career Readiness */}
-          <div className="card-hover bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl">
             <div className="mb-6">
               <div className="w-full h-48 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl mb-4 flex items-center justify-center">
                 <div className="w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center">
@@ -67,7 +57,7 @@ export default function StudentBenefits() {
           </div>
 
           {/* Insights-Driven Support */}
-          <div className="card-hover bg-white rounded-2xl p-6 shadow-lg">
+          <div className="bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl">
             <div className="mb-6">
               <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl mb-4 flex items-center justify-center">
                 <div className="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center">

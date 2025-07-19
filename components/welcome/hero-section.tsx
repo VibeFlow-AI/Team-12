@@ -7,36 +7,6 @@ interface HeroSectionProps {
 export default function HeroSection({ onGetStarted }: HeroSectionProps) {
   return (
     <section className="gradient-bg min-h-screen flex items-center relative overflow-hidden">
-      <style jsx>{`
-        .gradient-bg {
-          background: linear-gradient(135deg, #f8f7f4 0%, #e8e6e1 50%, #d4d2c8 100%);
-        }
-        
-        .mentor-bubble {
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .mentor-bubble:hover {
-          transform: scale(1.05);
-        }
-        
-        .floating-animation {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        .floating-animation:nth-child(2) {
-          animation-delay: -2s;
-        }
-        
-        .floating-animation:nth-child(3) {
-          animation-delay: -4s;
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-      `}</style>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -66,7 +36,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
           {/* Right Content - Mentor Bubbles */}
           <div className="relative h-96 lg:h-[500px]">
             {/* Main central bubble */}
-            <div className="absolute top-20 left-8 mentor-bubble floating-animation">
+            <div className="absolute top-20 left-8 transition-all duration-300 ease-out hover:scale-105 animate-float">
               <div className="w-32 h-32 rounded-full overflow-hidden shadow-xl border-4 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
                   <span className="text-white text-2xl font-bold">JD</span>
@@ -75,8 +45,8 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Top right bubble */}
-            <div className="absolute top-0 right-12 mentor-bubble floating-animation">
-              <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg border-3 border-white">
+            <div className="absolute top-0 right-12 transition-all duration-300 ease-out hover:scale-105 animate-float-delay-2">
+              <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
                   <span className="text-white text-lg font-bold">SA</span>
                 </div>
@@ -84,7 +54,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Large right bubble */}
-            <div className="absolute top-16 right-0 mentor-bubble floating-animation">
+            <div className="absolute top-16 right-0 transition-all duration-300 ease-out hover:scale-105 animate-float-delay-4">
               <div className="w-28 h-28 rounded-full overflow-hidden shadow-xl border-4 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
                   <span className="text-white text-xl font-bold">MK</span>
@@ -93,7 +63,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Bottom left large bubble */}
-            <div className="absolute bottom-20 left-0 mentor-bubble floating-animation">
+            <div className="absolute bottom-20 left-0 transition-all duration-300 ease-out hover:scale-105 animate-float">
               <div className="w-36 h-36 rounded-full overflow-hidden shadow-xl border-4 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
                   <span className="text-white text-2xl font-bold">AR</span>
@@ -102,8 +72,8 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Center right bubble */}
-            <div className="absolute top-32 right-8 mentor-bubble floating-animation">
-              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-3 border-white">
+            <div className="absolute top-32 right-8 transition-all duration-300 ease-out hover:scale-105 animate-float-delay-3">
+              <div className="w-24 h-24 rounded-full overflow-hidden shadow-lg border-2 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center">
                   <span className="text-white text-lg font-bold">TC</span>
                 </div>
@@ -111,8 +81,8 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Bottom right bubble */}
-            <div className="absolute bottom-8 right-4 mentor-bubble floating-animation">
-              <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg border-3 border-white">
+            <div className="absolute bottom-8 right-4 transition-all duration-300 ease-out hover:scale-105 animate-float-delay-2">
+              <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg border-2 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center">
                   <span className="text-white text-lg font-bold">DM</span>
                 </div>
@@ -120,7 +90,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
 
             {/* Small bottom bubble */}
-            <div className="absolute bottom-4 left-20 mentor-bubble floating-animation">
+            <div className="absolute bottom-4 left-20 transition-all duration-300 ease-out hover:scale-105 animate-float-delay-4">
               <div className="w-16 h-16 rounded-full overflow-hidden shadow-lg border-2 border-white">
                 <div className="w-full h-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
                   <span className="text-white text-sm font-bold">LW</span>
