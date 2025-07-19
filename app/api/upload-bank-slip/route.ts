@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
     // Get user's uploaded bank slips from Cloudinary
     const result = await cloudinary.search
       .expression(`folder:eduvibe/bank-slips AND tags:user-${session.user.id}`)
-      .sort_by([['created_at', 'desc']])
+      .sort_by('created_at', 'desc')
       .max_results(10)
       .execute();
 

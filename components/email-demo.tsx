@@ -218,7 +218,7 @@ export default function EmailDemo() {
           <div>
             <h4 className="font-semibold text-sm mb-2">2. Check Email Service Status</h4>
             <p className="text-sm text-muted-foreground">
-              Click "Check Email Service Status" above to verify your configuration.
+              Click &quot;Check Email Service Status&quot; above to verify your configuration.
             </p>
           </div>
           

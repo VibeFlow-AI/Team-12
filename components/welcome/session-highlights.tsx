@@ -66,7 +66,7 @@ export default function SessionHighlights() {
           </h2>
           <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
             Join the sessions students are raving about. These expert-led, high-impact sessions are designed
-            to help you unlock your full potential whether you're polishing your resume, mapping out your
+            to help you unlock your full potential whether you&apos;re polishing your resume, mapping out your
             career path, or getting ready to ace technical interviews.
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function SessionHighlights() {
                 <button className="bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors flex-1 mr-3">
                   Book a session
                 </button>
-                <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" aria-label="Add to favorites">
                   <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>

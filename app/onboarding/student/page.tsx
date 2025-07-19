@@ -95,7 +95,7 @@ export default function StudentOnboarding() {
           <CardHeader>
             <CardTitle>Welcome, {session?.user?.name}!</CardTitle>
             <CardDescription>
-              Let's set up your student profile to connect you with the best mentors
+              Let&apos;s set up your student profile to connect you with the best mentors
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -104,7 +104,7 @@ export default function StudentOnboarding() {
                 <Label htmlFor="bio">Tell us about yourself</Label>
                 <Textarea
                   id="bio"
-                  placeholder="Brief introduction about your background and what you're looking to achieve..."
+                                      placeholder="Brief introduction about your background and what you&apos;re looking to achieve..."
                   value={formData.bio}
                   onChange={(e) => setFormData({...formData, bio: e.target.value})}
                   required

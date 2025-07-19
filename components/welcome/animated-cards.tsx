@@ -46,7 +46,7 @@ export default function AnimatedCardsSection() {
   }, []);
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-b">
+    <section className="relative py-8 sm:py-12 lg:py-16">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl mx-auto">
@@ -137,7 +137,7 @@ export default function AnimatedCardsSection() {
         </div>
 
         {/* Progress Indicators */}
-        <div className="flex justify-center mt-8 sm:mt-10 space-x-2">
+        {/* <div className="flex justify-center mt-8 sm:mt-10 space-x-2">
           {cardsData.map((_, index) => (
             <button
               key={index}
@@ -149,7 +149,7 @@ export default function AnimatedCardsSection() {
               }`}
             />
           ))}
-        </div>
+        </div> */}
       </div>
     </section>
   );
