@@ -28,22 +28,34 @@ export default function WelcomePage() {
       <HeroSection onGetStarted={handleGetStarted} />
 
       {/* Gradient wrapper only around these two sections */}
-      <div className="relative min-h-screen overflow-hidden z-40 py-16">
+      <div className="relative min-h-screen overflow-hidden py-16">
         {/* Background Gradients */}
+        {/* LEFT SIDE - Blue + Pink */}
         <div
-          className="pointer-events-none absolute -top-32 -left-64 w-[1000px] h-[1000px] rounded-full blur-[200px] z-0"
+          className="pointer-events-none absolute -top-32 -left-64 w-[1000px] h-[1800px] rounded-full blur-[200px] z-0"
           style={{
             background:
-              "radial-gradient(circle, rgba(134, 239, 172, 0.4), transparent)",
+              "radial-gradient(circle, rgba(0, 132, 255, 0.17), transparent)",
           }}
         ></div>
+
+        <div
+          className="pointer-events-none absolute top-64 -left-80 w-[800px] h-[800px] rounded-full blur-[200px] z-0"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(255, 102, 102, 0.15), transparent)",
+          }}
+        ></div>
+
+        {/* RIGHT SIDE - Yellow + Purple */}
         <div
           className="pointer-events-none absolute top-0 right-0 w-[900px] h-[900px] rounded-full blur-[200px] z-0"
           style={{
             background:
-              "radial-gradient(circle, rgba(147, 197, 253, 0.4), transparent)",
+              "radial-gradient(circle, rgba(217, 255, 0, 0.17), transparent)",
           }}
         ></div>
+
         <div
           className="pointer-events-none absolute bottom-0 -right-64 w-[1000px] h-[1000px] rounded-full blur-[200px] z-0"
           style={{
@@ -52,7 +64,6 @@ export default function WelcomePage() {
           }}
         ></div>
 
-        {/* Content Layers (z-10) */}
         <div className="relative z-10">
           <AnimatedCardsSection />
           <SessionHighlights />
