@@ -29,6 +29,8 @@ interface Mentor {
   role?: string;
   experience?: string;
   availability?: string[];
+  matchScore?: number;
+  matchReasons?: string[];
 }
 
 // Mock data - replace with actual API call
@@ -151,20 +153,53 @@ export default function DiscoverPage() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
 
-  // Fetch mentors from API
+  // Fetch AI-powered recommendations from API
   useEffect(() => {
-    const fetchMentors = async () => {
+    const fetchRecommendations = async () => {
       try {
-        const response = await fetch("/api/mentors");
-        if (response.ok) {
-          const data = await response.json();
-          setMentors(data.mentors || mockMentors);
+        // First try to get AI-powered recommendations
+        const recommendationsResponse = await fetch("/api/recommendations");
+        if (recommendationsResponse.ok) {
+          const recommendationsData = await recommendationsResponse.json();
+          if (recommendationsData.success && recommendationsData.recommendations) {
+            // Convert AI recommendations to mentor format
+            const aiMentors = recommendationsData.recommendations.map((rec: any) => ({
+              id: rec._id,
+              name: rec.name,
+              location: rec.location || "Not specified",
+              subjects: rec.subjects,
+              bio: rec.bio || "Experienced educator",
+              duration: "30 mins - 1 hour", // Default duration
+              languages: rec.languages,
+              rating: rec.rating,
+              totalSessions: rec.totalSessions,
+              avatarColor: { 
+                from: "#3b82f6", 
+                to: "#1d4ed8" 
+              }, // Default color
+              company: "Educational Institution",
+              role: "Mentor",
+              experience: rec.experienceLevel,
+              availability: rec.availability?.map((avail: any) => avail.day) || [],
+              matchScore: rec.matchScore,
+              matchReasons: rec.matchReasons
+            }));
+            setMentors(aiMentors);
+            return;
+          }
+        }
+
+        // Fallback to regular mentors API
+        const mentorsResponse = await fetch("/api/mentors");
+        if (mentorsResponse.ok) {
+          const mentorsData = await mentorsResponse.json();
+          setMentors(mentorsData.mentors || mockMentors);
         } else {
-          // Fallback to mock data if API fails
+          // Final fallback to mock data
           setMentors(mockMentors);
         }
       } catch (error) {
-        console.error("Failed to fetch mentors:", error);
+        console.error("Failed to fetch recommendations:", error);
         // Fallback to mock data
         setMentors(mockMentors);
       } finally {
@@ -173,52 +208,96 @@ export default function DiscoverPage() {
     };
 
     if (session?.user?.role === "student") {
-      fetchMentors();
+      fetchRecommendations();
     } else {
       setLoading(false);
     }
   }, [session]);
 
-  // Apply filters
+  // Apply filters and potentially refetch AI recommendations
   useEffect(() => {
-    let filtered = mentors;
+    const applyFiltersAndFetch = async () => {
+      // Build recommendation filters
+      const filters: any = {};
+      
+      if (selectedSubject !== "All Subjects") {
+        filters.subjects = [selectedSubject];
+      }
+      
+      if (selectedLocation !== "All Locations") {
+        filters.location = selectedLocation;
+      }
 
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter(mentor => 
-        mentor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mentor.subjects.some(subject => 
-          subject.toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        mentor.location.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+      // If we have active AI filters, refetch recommendations
+      const hasAIFilters = selectedSubject !== "All Subjects" || selectedLocation !== "All Locations";
+      
+      if (hasAIFilters && session?.user?.role === "student") {
+        try {
+          const queryParams = new URLSearchParams();
+          
+          if (filters.subjects) {
+            queryParams.set('subjects', filters.subjects.join(','));
+          }
+          if (filters.location) {
+            queryParams.set('location', filters.location);
+          }
+          
+          const response = await fetch(`/api/recommendations?${queryParams.toString()}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.recommendations) {
+              const aiMentors = data.recommendations.map((rec: any) => ({
+                id: rec._id,
+                name: rec.name,
+                location: rec.location || "Not specified",
+                subjects: rec.subjects,
+                bio: rec.bio || "Experienced educator",
+                duration: "30 mins - 1 hour",
+                languages: rec.languages,
+                rating: rec.rating,
+                totalSessions: rec.totalSessions,
+                avatarColor: { from: "#3b82f6", to: "#1d4ed8" },
+                company: "Educational Institution",
+                role: "Mentor",
+                experience: rec.experienceLevel,
+                availability: rec.availability?.map((avail: any) => avail.day) || [],
+                matchScore: rec.matchScore,
+                matchReasons: rec.matchReasons
+              }));
+              setMentors(aiMentors);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to refetch recommendations:", error);
+        }
+      }
 
-    // Duration filter
-    if (selectedDuration !== "All Durations") {
-      filtered = filtered.filter(mentor => 
-        mentor.duration.toLowerCase().includes(selectedDuration.toLowerCase())
-      );
-    }
+      // Apply local filters
+      let filtered = mentors;
 
-    // Subject filter
-    if (selectedSubject !== "All Subjects") {
-      filtered = filtered.filter(mentor =>
-        mentor.subjects.some(subject => 
-          subject.toLowerCase() === selectedSubject.toLowerCase()
-        )
-      );
-    }
+      // Search filter
+      if (searchQuery) {
+        filtered = filtered.filter(mentor => 
+          mentor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          mentor.subjects.some(subject => 
+            subject.toLowerCase().includes(searchQuery.toLowerCase())
+          ) ||
+          mentor.location.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
 
-    // Location filter
-    if (selectedLocation !== "All Locations") {
-      filtered = filtered.filter(mentor =>
-        mentor.location.toLowerCase() === selectedLocation.toLowerCase()
-      );
-    }
+      // Duration filter (local only)
+      if (selectedDuration !== "All Durations") {
+        filtered = filtered.filter(mentor => 
+          mentor.duration.toLowerCase().includes(selectedDuration.toLowerCase())
+        );
+      }
 
-    setFilteredMentors(filtered);
-  }, [searchQuery, selectedDuration, selectedSubject, selectedLocation, mentors]);
+      setFilteredMentors(filtered);
+    };
+
+    applyFiltersAndFetch();
+  }, [searchQuery, selectedDuration, selectedSubject, selectedLocation, mentors, session]);
 
   const handleBookSession = (mentor: Mentor) => {
     setSelectedMentor(mentor);

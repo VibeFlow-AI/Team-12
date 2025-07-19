@@ -29,7 +29,7 @@ export default function DashboardPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {/* Discover Mentors */}
+        {/* AI-Powered Mentor Discovery */}
         <Link 
           href="/samples"
           className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
@@ -39,12 +39,12 @@ export default function DashboardPage() {
               <Search className="w-6 h-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <h3 className="font-semibold text-neutral-900">Discover Mentors</h3>
-              <p className="text-sm text-neutral-600">Find perfect mentors for you</p>
+              <h3 className="font-semibold text-neutral-900">AI-Powered Discovery</h3>
+              <p className="text-sm text-neutral-600">Find mentors tailored to your goals</p>
             </div>
           </div>
           <p className="text-neutral-500 text-sm">
-            Browse through our expert mentors and book your next session.
+            Our AI analyzes your learning profile to recommend the perfect mentors for you.
           </p>
         </Link>
 
@@ -129,14 +129,14 @@ export default function DashboardPage() {
 
       {/* Get Started Section */}
       <div className="bg-gradient-to-r from-neutral-900 to-neutral-700 rounded-2xl p-8 text-white">
-        <h2 className="text-2xl font-bold mb-2">Ready to start learning?</h2>
+        <h2 className="text-2xl font-bold mb-2">Ready to start your AI-powered learning journey?</h2>
         <p className="text-neutral-300 mb-6">
-          Connect with expert mentors and accelerate your learning journey.
+          Connect with expertly matched mentors using our AI recommendation engine based on your learning profile.
         </p>
         <div className="flex gap-4">
           <Button asChild className="bg-white text-neutral-900 hover:bg-neutral-100">
             <Link href="/samples">
-              Discover Mentors
+              Get AI Recommendations
             </Link>
           </Button>
           <Button variant="outline" asChild className="border-white text-white hover:bg-white hover:text-neutral-900">
