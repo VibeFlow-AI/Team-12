@@ -46,7 +46,7 @@ export default function AnimatedCardsSection() {
   }, []);
 
   return (
-    <section className="relative py-8 sm:py-12 lg:py-16">
+    <section className="relative py-8 sm:py-12 lg:py-16" id="about">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl mx-auto">
@@ -101,7 +101,7 @@ export default function AnimatedCardsSection() {
                 {/* Content */}
                 <div className="relative h-full flex flex-col justify-end p-4 sm:p-5 lg:p-6 text-gray-900 z-10">
                   <motion.h3
-                    className="text-base sm:text-lg lg:text-xl font-bold mb-2 leading-tight text-gray-900"
+                    className="text-base sm:text-lg lg:text-xl font-medium mb-2 leading-tight text-gray-900"
                     layout="position"
                   >
                     {card.title}

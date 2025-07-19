@@ -34,7 +34,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-5xl font-medium  text-gray-900 lg:text-6xl"
+                className="text-5xl font-medium text-gray-900 lg:text-6xl max-w-3xl lg:max-w-4xl leading-tight"
               >
                 Empowering Students with Personalized Mentorship{" "}
                 <motion.span
@@ -46,6 +46,7 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
                   <BookOpen className="h-12 w-12 text-gray-700 lg:h-16 lg:w-16" />
                 </motion.span>
               </motion.h1>
+
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

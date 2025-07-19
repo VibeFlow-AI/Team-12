@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -9,12 +10,18 @@ interface NavigationProps {
   isAuthenticated?: boolean;
 }
 
-export default function Navigation({ onGetStarted, isAuthenticated }: NavigationProps) {
+export default function Navigation({
+  onGetStarted,
+  isAuthenticated,
+}: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const buttonHref = isAuthenticated ? "/dashboard" : "/auth/signin";
+  const buttonText = isAuthenticated ? "Go to Dashboard" : "Get Started";
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
@@ -46,13 +53,13 @@ export default function Navigation({ onGetStarted, isAuthenticated }: Navigation
                   Home
                 </a>
                 <a
-                  href="#"
+                  href="#session-highlights"
                   className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
                 >
                   Sessions
                 </a>
                 <a
-                  href="#"
+                  href="#about"
                   className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
                 >
                   About
@@ -62,12 +69,12 @@ export default function Navigation({ onGetStarted, isAuthenticated }: Navigation
 
             {/* Desktop Get Started Button */}
             <div className="hidden md:flex items-center">
-              <button
-                onClick={onGetStarted}
+              <Link
+                href={buttonHref}
                 className="bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
               >
-                {isAuthenticated ? "Go to Dashboard" : "Get Started"}
-              </button>
+                {buttonText}
+              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -98,29 +105,27 @@ export default function Navigation({ onGetStarted, isAuthenticated }: Navigation
                   Home
                 </a>
                 <a
-                  href="#"
+                  href="#session-highlights"
                   className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sessions
                 </a>
                 <a
-                  href="#"
+                  href="#about"
                   className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   About
                 </a>
                 <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      onGetStarted();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                  <Link
+                    href={buttonHref}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block text-center bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
-                    {isAuthenticated ? "Go to Dashboard" : "Get Started"}
-                  </button>
+                    {buttonText}
+                  </Link>
                 </div>
               </div>
             </div>
