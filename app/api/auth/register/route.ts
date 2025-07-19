@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { getDatabase } from "@/lib/mongodb-alt";
+import { emailService } from "@/app/email/service";
 
 export async function POST(request: Request) {
   try {
@@ -35,6 +36,11 @@ export async function POST(request: Request) {
       role,
       createdAt: new Date(),
       updatedAt: new Date(),
+    });
+
+    // Send welcome email (don't block response if email fails)
+    emailService.sendWelcomeEmail({ name, email, role }).catch(error => {
+      console.error('Failed to send welcome email:', error);
     });
 
     return NextResponse.json({
