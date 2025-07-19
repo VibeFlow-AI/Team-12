@@ -5,12 +5,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const uri = process.env.DATABASE_URL;
-const options = {
-  bufferCommands: false,
-  bufferMaxEntries: 0,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+const options = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
