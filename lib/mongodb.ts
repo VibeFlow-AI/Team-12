@@ -28,7 +28,10 @@ if (uri) {
     clientPromise = global._mongoClientPromise;
   } else {
     client = new MongoClient(uri, options);
-    clientPromise = client.connect();
+    clientPromise = client.connect().catch((error) => {
+      console.error("MongoDB connection error:", error);
+      throw error;
+    });
   }
 } else {
   console.warn("DATABASE_URL not provided. MongoDB features will be disabled.");
@@ -42,7 +45,7 @@ export async function getDb(): Promise<Db | null> {
   
   try {
     const client = await clientPromise;
-    return client.db();
+    return client.db("team_12");
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
     return null;
