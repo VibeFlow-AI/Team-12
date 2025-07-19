@@ -9,7 +9,7 @@ interface NavigationProps {
   isAuthenticated?: boolean;
 }
 
-export default function Navigation({ onGetStarted }: NavigationProps) {
+export default function Navigation({ onGetStarted, isAuthenticated }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -66,7 +66,7 @@ export default function Navigation({ onGetStarted }: NavigationProps) {
                 onClick={onGetStarted}
                 className="bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
               >
-                Get Started
+                {isAuthenticated ? "Go to Dashboard" : "Get Started"}
               </button>
             </div>
 
@@ -119,7 +119,7 @@ export default function Navigation({ onGetStarted }: NavigationProps) {
                     }}
                     className="w-full bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
-                    Get Started
+                    {isAuthenticated ? "Go to Dashboard" : "Get Started"}
                   </button>
                 </div>
               </div>
