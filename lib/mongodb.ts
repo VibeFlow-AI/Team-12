@@ -5,7 +5,11 @@ if (!process.env.DATABASE_URL) {
 }
 
 const uri = process.env.DATABASE_URL;
-const options = {};
+const options = {
+  tls: true,
+  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidHostnames: false,
+};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
@@ -27,7 +31,7 @@ if (process.env.NODE_ENV === "development") {
 
 export async function getDb(): Promise<Db> {
   const client = await clientPromise;
-  return client.db();
+  return client.db("team_12");
 }
 
 export default clientPromise;

@@ -3,6 +3,28 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Custom colors for EduVibe */
+@layer utilities {
+  .bg-cream {
+    background-color: #F5F3EF;
+  }
+  .bg-sage {
+    background-color: #A8B5A0;
+  }
+  .bg-forest {
+    background-color: #4A5D23;
+  }
+  .text-cream {
+    color: #F5F3EF;
+  }
+  .text-sage {
+    color: #A8B5A0;
+  }
+  .text-forest {
+    color: #4A5D23;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

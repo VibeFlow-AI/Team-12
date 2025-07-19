@@ -1,11 +1,24 @@
-import SampleView from "@/components/sample-view";
-import { getSamples } from "@/server/actions/sample";
+"use client";
 
-async function Home() {
-  const result = await getSamples();
-  const samples = result.success ? result.samples : [];
+import { useRouter } from "next/navigation";
+import Navigation from "@/components/welcome/navigation";
+import HeroSection from "@/components/welcome/hero-section";
+import StudentBenefits from "@/components/welcome/student-benefits";
+import SessionHighlights from "@/components/welcome/session-highlights";
 
-  return <SampleView initialSamples={samples} />;
+export default function WelcomePage() {
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    router.push("/samples");
+  };
+
+  return (
+    <div className="font-sans antialiased">
+      <Navigation onGetStarted={handleGetStarted} />
+      <HeroSection onGetStarted={handleGetStarted} />
+      <StudentBenefits />
+      <SessionHighlights />
+    </div>
+  );
 }
-
-export default Home;

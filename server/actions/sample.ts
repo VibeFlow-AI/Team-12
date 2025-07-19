@@ -30,7 +30,15 @@ export async function addSample(formData: FormData) {
     const result = await collection.insertOne(sample);
 
     revalidatePath("/");
-    return { success: true, sample: { ...sample, _id: result.insertedId } };
+    return { 
+      success: true, 
+      sample: { 
+        _id: result.insertedId.toString(),
+        id: sample.id,
+        createdAt: sample.createdAt.toISOString(),
+        updatedAt: sample.updatedAt.toISOString()
+      } 
+    };
   } catch (error) {
     console.error("Error creating sample:", error);
     return { error: "Failed to create sample" };
@@ -67,13 +75,13 @@ export async function getSamples(): Promise<{ success: boolean; samples: Sample[
     const samples = documents.map(doc => ({
       _id: doc._id.toString(),
       id: doc.id,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
+      createdAt: doc.createdAt.toISOString(),
+      updatedAt: doc.updatedAt.toISOString(),
     }));
     
     return { success: true, samples };
   } catch (error) {
     console.error("Error fetching samples:", error);
-    return { error: "Failed to fetch samples", samples: [] };
+    return { success: false, error: "Failed to fetch samples", samples: [] };
   }
 }
