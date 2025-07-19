@@ -1,50 +1,51 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import SessionCard from "@/components/welcome/session-card";
 
-const sessionsData = [
-  {
-    id: 1,
-    instructor: "Rahul Lavan",
-    location: "Colombo",
-    initials: "RL",
-    initialsColor: "bg-blue-500",
-    subjects: ["Science", "Physics", "Biology"],
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
-    duration: "30 mins - 1 hour",
-    language: "English, Tamil",
-  },
-  {
-    id: 2,
-    instructor: "Chathum Rahal",
-    location: "Galle",
-    initials: "CR",
-    initialsColor: "bg-orange-500",
-    subjects: ["Mathematics", "History", "English"],
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
-    duration: "1 hour",
-    language: "English",
-  },
-  {
-    id: 3,
-    instructor: "Malsha Fernando",
-    location: "Colombo",
-    initials: "MI",
-    initialsColor: "bg-pink-500",
-    subjects: ["Chemistry", "Art", "Commerce"],
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
-    duration: "1 hour",
-    language: "Sinhala",
-  },
-];
+interface Session {
+  id: number;
+  instructor: string;
+  location: string;
+  initials: string;
+  initialsColor: string;
+  subjects: string[];
+  description: string;
+  duration: string;
+  language: string;
+}
 
 export default function SessionHighlights() {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [limit, setLimit] = useState(3);
+  const [loading, setLoading] = useState(false);
+
+  const fetchSessions = async (limit: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/highlight?limit=${limit}`);
+      if (!res.ok) throw new Error("Failed to fetch sessions");
+      const data = await res.json();
+      setSessions(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions(limit);
+  }, [limit]);
+
+  const toggleLoadMore = () => {
+    if (limit === 3) setLimit(6);
+    else setLimit(3);
+  };
+
   return (
     <section className="py-8 sm:py-12 lg:py-16 relative overflow-hidden">
-      {/* Gradient Background Circles - From Sides */}
+      {/* Gradient Background Circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-48 w-96 h-96 bg-gradient-radial from-green-300/40 to-transparent rounded-full blur-3xl"></div>
         <div className="absolute top-0 -right-32 w-80 h-80 bg-gradient-radial from-blue-300/40 to-transparent rounded-full blur-3xl"></div>
@@ -69,7 +70,7 @@ export default function SessionHighlights() {
         <div className="w-full flex justify-center mb-8 sm:mb-10">
           <div className="w-full max-w-6xl">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sessionsData.map((session) => (
+              {sessions.map((session) => (
                 <SessionCard key={session.id} session={session} />
               ))}
             </div>
@@ -80,9 +81,15 @@ export default function SessionHighlights() {
         <div className="text-center">
           <button
             type="button"
-            className="px-8 py-2 border border-gray-300 rounded hover:bg-white/50 bg-transparent"
+            onClick={toggleLoadMore}
+            disabled={loading}
+            className="px-8 py-2 border border-gray-300 rounded hover:bg-white/50 bg-transparent disabled:opacity-50"
           >
-            Load More Sessions
+            {loading
+              ? "Loading..."
+              : limit === 3
+                ? "Load More Sessions"
+                : "Show Less"}
           </button>
         </div>
       </div>

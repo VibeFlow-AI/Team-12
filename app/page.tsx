@@ -28,7 +28,7 @@ export default function WelcomePage() {
       <HeroSection onGetStarted={handleGetStarted} />
 
       {/* Gradient wrapper only around these two sections */}
-      <div className="relative min-h-screen overflow-hidden z-40 py-16">
+      <div className="relative min-h-screen overflow-hidden py-16">
         {/* Background Gradients */}
         <div
           className="pointer-events-none absolute -top-32 -left-64 w-[1000px] h-[1000px] rounded-full blur-[200px] z-0"
@@ -52,7 +52,6 @@ export default function WelcomePage() {
           }}
         ></div>
 
-        {/* Content Layers (z-10) */}
         <div className="relative z-10">
           <AnimatedCardsSection />
           <SessionHighlights />
